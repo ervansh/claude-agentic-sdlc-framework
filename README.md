@@ -135,7 +135,9 @@ writes and PR creation require explicit per-run human approval.
    `--break-system-packages` on systems that require it:
 
    ```bash
-   python3 -m venv .venv && . .venv/bin/activate
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1          # Windows PowerShell
+   # source .venv/bin/activate            # macOS / Linux
    pip install -r mcp/requirements.txt
    ```
 
@@ -150,7 +152,7 @@ writes and PR creation require explicit per-run human approval.
 ## Running Tests
 
 ```bash
-python3 -m unittest discover -s tests -t . -v
+python -m unittest discover -s tests -t . -v
 ```
 
 The hook scripts have unit tests. Their runtime behavior inside a given Claude
