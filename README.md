@@ -189,7 +189,10 @@ python -m pip install -r mcp/requirements.txt
 
 If you don't use a virtual environment, use the same `python -m pip install` line
 without the venv steps. Activate the venv in the same terminal before starting Claude
-Code, because `.mcp.json` runs `python`.
+Code. `.mcp.json` launches the server with the command configured there. On
+Windows this is `py -3` on current `main`. Check the `"command"` value in
+`.mcp.json` and make sure that launcher resolves to the Python where you installed
+the packages.
 
 ### Step 5: Check that the MCP server connects
 
