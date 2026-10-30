@@ -1,7 +1,7 @@
 """sdlc-integrations: authorized, credential-safe MCP access to Jira, Confluence and GitHub.
 
 Transport: stdio (FastMCP). Configuration: environment variables only.
-Run from the repo root: python3 mcp/sdlc_integrations/server.py
+Run from the repo root: python mcp/sdlc_integrations/server.py
 
 Tools (names are exact; agents depend on them):
   jira_get_issue, jira_search

@@ -7,7 +7,12 @@ argument-hint: "[Application] [Application Root] [Story Session] [Story ID] [Sto
 
 Run this command in the main session, not as a subagent; the orchestrator must invoke specialist subagents, and subagents cannot spawn subagents.
 
-Delegate to the `sdlc-orchestrator` subagent (.claude/agents/sdlc-orchestrator.md).
+Act as the SDLC orchestrator in this main session, applying the rules in
+`.claude/agents/sdlc-orchestrator.md`. Do not run the orchestrator itself as a
+subagent. Delegate only specialist stages, using the Agent tool, to:
+requirements-analyst, solution-architect, design-reviewer, implementation-planner,
+implementation-engineer, code-reviewer, verification-engineer, pr-preparer,
+and user-story-documenter (only when publishing is requested).
 
 Run context (passed as arguments to this command):
 
