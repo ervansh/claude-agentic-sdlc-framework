@@ -1,0 +1,41 @@
+name: Framework Tests
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - ".claude/**"
+      - "mcp/**"
+      - "tests/**"
+      - ".github/workflows/framework-tests.yml"
+  pull_request:
+    branches: [main, master]
+    paths:
+      - ".claude/**"
+      - "mcp/**"
+      - "tests/**"
+      - ".github/workflows/framework-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Run framework tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install MCP server dependencies
+        run: pip install -r mcp/requirements.txt
+
+      - name: Run framework tests
+        run: python -m unittest discover -s tests -t . -v

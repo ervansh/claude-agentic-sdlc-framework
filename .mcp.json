@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "sdlc-integrations": {
+      "command": "python3",
+      "args": ["mcp/sdlc_integrations/server.py"],
+      "env": {
+        "JIRA_BASE_URL": "${JIRA_BASE_URL}",
+        "JIRA_EMAIL": "${JIRA_EMAIL}",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
+        "CONFLUENCE_BASE_URL": "${CONFLUENCE_BASE_URL}",
+        "CONFLUENCE_EMAIL": "${CONFLUENCE_EMAIL}",
+        "CONFLUENCE_API_TOKEN": "${CONFLUENCE_API_TOKEN}",
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+        "GITHUB_API_URL": "${GITHUB_API_URL:-https://api.github.com}"
+      }
+    }
+  }
+}
