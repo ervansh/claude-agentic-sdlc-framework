@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "sdlc-integrations": {
-      "command": "python3",
+      "command": "python",
       "args": ["mcp/sdlc_integrations/server.py"],
       "env": {
         "JIRA_BASE_URL": "${JIRA_BASE_URL}",
