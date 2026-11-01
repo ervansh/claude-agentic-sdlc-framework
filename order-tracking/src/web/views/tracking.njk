@@ -1,0 +1,38 @@
+{% extends "layout.njk" %}
+{% block title %}Order {{ view.orderId }} - Order Tracking{% endblock %}
+{% block content %}
+<h1>Order {{ view.orderId }}</h1>
+
+<h2>Order details</h2>
+<dl>
+<dt>Order ID</dt>
+<dd>{{ view.orderId }}</dd>
+<dt>Status</dt>
+<dd>{{ view.status }}</dd>
+<dt>Date placed</dt>
+<dd>{{ view.dates.placed }}</dd>
+{% if view.dates.estimatedDelivery %}
+<dt>Estimated delivery</dt>
+<dd>{{ view.dates.estimatedDelivery }}</dd>
+{% endif %}
+{% if view.dates.delivered %}
+<dt>Delivered</dt>
+<dd>{{ view.dates.delivered }}</dd>
+{% endif %}
+</dl>
+
+<h2>Items</h2>
+<table>
+<caption>Items in this order</caption>
+<thead>
+<tr><th scope="col">Item</th><th scope="col">Quantity</th></tr>
+</thead>
+<tbody>
+{% for item in view.items %}
+<tr><th scope="row">{{ item.name }}</th><td>{{ item.quantity }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+<p><a href="/">Look up another order</a></p>
+{% endblock %}

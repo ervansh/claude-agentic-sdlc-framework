@@ -45,19 +45,19 @@ IMP-006 -> IMP-013 -> IMP-014
 | ID | Title | Priority | Status |
 |---|---|---|---|
 | IMP-001 | Project scaffold and tooling | High | DONE — ACCEPTED (human decision) |
-| IMP-002 | Domain types and input normalizer | High | READY |
-| IMP-003 | Validator | High | BLOCKED (IMP-002) |
-| IMP-004 | Order model, repository interface, mock data | High | READY |
-| IMP-005 | View mapper and lookup service | High | BLOCKED (IMP-002, IMP-003, IMP-004) |
-| IMP-006 | Express app shell, security middleware, safe logging, health | High | READY |
-| IMP-007 | Routes and accessible templates (form, errors, tracking view) | High | BLOCKED (IMP-005, IMP-006) |
-| IMP-008 | Responsive CSS and accessibility styling | Medium | BLOCKED (IMP-007) |
-| IMP-009 | Integration tests: AC-1 to AC-4, A-1, A-4 | High | BLOCKED (IMP-007) |
-| IMP-010 | Data-protection tests: AC-5 / FR-9 | High | BLOCKED (IMP-007) |
-| IMP-011 | Performance smoke test (NFR-1) | Medium | BLOCKED (IMP-007) |
-| IMP-012 | Browser E2E and accessibility checks (NFR-2, NFR-3) | High | BLOCKED (IMP-008) |
-| IMP-013 | Optional per-IP request throttling | Low | BLOCKED (IMP-006) |
-| IMP-014 | Implementation regression and readiness checks | High | BLOCKED (IMP-009 to IMP-013) |
+| IMP-002 | Domain types and input normalizer | High | DONE — ACCEPTED (human decision) |
+| IMP-003 | Validator | High | DONE — ACCEPTED (human decision) |
+| IMP-004 | Order model, repository interface, mock data | High | DONE — ACCEPTED (human decision) |
+| IMP-005 | View mapper and lookup service | High | DONE — ACCEPTED (human decision) |
+| IMP-006 | Express app shell, security middleware, safe logging, health | High | DONE — ACCEPTED (human decision) |
+| IMP-007 | Routes and accessible templates (form, errors, tracking view) | High | DONE — ACCEPTED (human decision) |
+| IMP-008 | Responsive CSS and accessibility styling | Medium | DONE — ACCEPTED (human decision) |
+| IMP-009 | Integration tests: AC-1 to AC-4, A-1, A-4 | High | DONE — ACCEPTED (human decision) |
+| IMP-010 | Data-protection tests: AC-5 / FR-9 | High | DONE — ACCEPTED (human decision) |
+| IMP-011 | Performance smoke test (NFR-1) | Medium | DONE — ACCEPTED (human decision) |
+| IMP-012 | Browser E2E and accessibility checks (NFR-2, NFR-3) | High | DONE — ACCEPTED WITH KNOWN LIMITATIONS (human decision) |
+| IMP-013 | Optional per-IP request throttling | Low | DONE — ACCEPTED (human decision) |
+| IMP-014 | Implementation regression and readiness checks | High | DONE — ACCEPTED (human decision) |
 
 ---
 
@@ -80,7 +80,8 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Implement shared domain types and the pure normalizer for FR-8.
 - Priority: High
-- Status: READY
+- Status: DONE — ACCEPTED (human decision)
+- Acceptance: Human stated "I accept IMP-002." The decision was made by the human, not by the implementation engineer. See implementation-log.md.
 - Dependencies: IMP-001 (DONE)
 - Requirement/AC traceability: FR-8, AC-4, A-3; FR-3 (whitespace-only last name treated as omitted); FR-9 (LookupResult types)
 - Architecture references: Sections 4 (item 2), 5 (LookupResult), 6 step 1 and step 7; ADR-3
@@ -94,8 +95,9 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Implement required-field and order-number format checks.
 - Priority: High
-- Status: BLOCKED. Blocking dependency: IMP-002
-- Dependencies: IMP-002
+- Status: DONE — ACCEPTED (human decision)
+- Acceptance: Human stated "I accept IMP-003." The decision was made by the human, not by the implementation engineer. See implementation-log.md.
+- Dependencies: IMP-002 (DONE)
 - Requirement/AC traceability: FR-2, FR-7, AC-3, FR-10, A-4
 - Architecture references: Sections 4 (item 3), 6 steps 2 and 3, 9
 - Implementation scope: `order-tracking/src/domain/validate.ts` (empty check returning MissingInput; regex `^ORD[0-9]{7}$` check returning FormatError); constants for format and missing-field message text (static, P-4, P-5) in `order-tracking/src/domain/messages.ts`; tests `order-tracking/tests/unit/validate.test.ts`.
@@ -108,7 +110,8 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Provide server-side-only mock order data behind a repository interface.
 - Priority: High
-- Status: READY
+- Status: DONE — ACCEPTED (human decision)
+- Acceptance: Human stated "I accept IMP-004." The decision was made by the human, not by the implementation engineer. See implementation-log.md.
 - Dependencies: IMP-001 (DONE)
 - Requirement/AC traceability: Q-004, FR-5 (displayable fields), FR-3 (last-name matching data)
 - Architecture references: Sections 4 (item 5), 5; ADR-5
@@ -122,8 +125,9 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Implement toTrackingView and lookupOrder orchestrating normalization, validation, repository query and last-name matching.
 - Priority: High
-- Status: BLOCKED. Blocking dependencies: IMP-002, IMP-003, IMP-004
-- Dependencies: IMP-002, IMP-003, IMP-004
+- Status: DONE — ACCEPTED (human decision)
+- Acceptance: Human stated "I accept IMP-005." The decision was made by the human, not by the implementation engineer. See implementation-log.md.
+- Dependencies: IMP-002 (DONE), IMP-003 (DONE), IMP-004 (DONE) — all satisfied
 - Requirement/AC traceability: FR-3, A-1, FR-5, AC-1, FR-6, AC-2, FR-7, AC-3, FR-8, AC-4, FR-9, AC-5, FR-10, A-4
 - Architecture references: Sections 4 (items 4, 6), 5, 6 steps 1-7, 8 items 2, 3, 4, 6, 9 table; ADR-3, ADR-4, ADR-6
 - Implementation scope: `order-tracking/src/domain/toTrackingView.ts` (maps only orderId, status, items, dates; no customer name), `order-tracking/src/domain/lookupOrder.ts` (repository injected; order-number-only acceptance isolated in a single match step; same code path whether or not the order exists, with a dummy-value compare when absent as best-effort timing equalization); tests `order-tracking/tests/unit/toTrackingView.test.ts`, `order-tracking/tests/unit/lookupOrder.test.ts`.
@@ -136,7 +140,8 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Create the Express app factory with security headers, body limit, global error handler, outcome-only logging and `/healthz`.
 - Priority: High
-- Status: READY
+- Status: DONE — ACCEPTED (human decision)
+- Acceptance: Human stated "I accept IMP-006." The decision was made by the human, not by the implementation engineer. See implementation-log.md.
 - Dependencies: IMP-001 (DONE)
 - Requirement/AC traceability: FR-1, FR-4 (no auth), FR-9, AC-5 (logging, headers, generic error), NFR-1 (small assets)
 - Architecture references: Sections 4 (item 1), 8 items 7, 8, 9, 10 (n/a here), 10 (healthz), 13
@@ -150,8 +155,9 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Implement `GET /` (and `/track`), `POST /track`, and templates for the form, error states and Order Tracking view.
 - Priority: High
-- Status: BLOCKED. Blocking dependencies: IMP-005, IMP-006
-- Dependencies: IMP-005, IMP-006
+- Status: DONE — ACCEPTED (human decision)
+- Acceptance: Human stated "I accept IMP-007." The decision was made by the human, not by the implementation engineer. See implementation-log.md.
+- Dependencies: IMP-005 (DONE), IMP-006 (DONE) — all satisfied
 - Requirement/AC traceability: FR-1, FR-2, FR-3, FR-4, FR-5, AC-1, FR-6, AC-2, FR-7, AC-3, FR-8, AC-4, FR-9, AC-5, FR-10, A-4, NFR-3 (markup)
 - Architecture references: Sections 6, 7, 8 items 5, 6, 8, 9 and the table in 9, 11 (markup items), 12; ADR-2, ADR-4
 - Implementation scope: `order-tracking/src/web/routes.ts`, `order-tracking/src/web/views/layout.njk`, `form.njk`, `tracking.njk`, `error.njk` (the last owns only the generic error page), optional `order-tracking/src/web/public/enhance.js` (progressive enhancement only; may be omitted). Behaviour: POST body only, never query string; tracking view rendered directly in the POST response with `Cache-Control: no-store` (no redirect); all lookup responses carry `no-store`; HTTP 200 for every failure outcome (P-2); failure messages are constants only (P-3, P-4, P-5); order number retained in the form only when it passes the format check, last name never echoed; message in `role="alert"` element with `aria-describedby` association, an error summary that receives focus on re-render, inline error beside the field; labels bound to inputs, "optional" in the last name label text, `lang` and page titles, semantic headings and landmarks; tracking view as a definition list or table with headers showing order ID, status as text, items (name, quantity), dates (placed, estimated delivery, delivered where present, unambiguous format) and a link back to look up another order; `autocomplete="off"` (P-6).
@@ -164,8 +170,9 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Provide mobile-first, accessible styling.
 - Priority: Medium
-- Status: BLOCKED. Blocking dependency: IMP-007
-- Dependencies: IMP-007
+- Status: DONE — ACCEPTED (human decision)
+- Acceptance: Human stated "I accept IMP-008." The decision was made by the human, not by the implementation engineer. The 320 px, 200% zoom, and focus-ring browser checks were not executed and are carried to IMP-012 or a manual check. See implementation-log.md.
+- Dependencies: IMP-007 (DONE) — satisfied
 - Requirement/AC traceability: NFR-2, NFR-3
 - Architecture references: Section 11
 - Implementation scope: `order-tracking/src/web/public/styles.css`; viewport meta confirmed in the layout template; no polyfill-dependent features.
@@ -178,8 +185,9 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Add supertest integration coverage of the lookup behaviours.
 - Priority: High
-- Status: BLOCKED. Blocking dependency: IMP-007
-- Dependencies: IMP-007
+- Status: DONE — ACCEPTED (human decision)
+- Acceptance: Human stated "I accept IMP-009." The decision was made by the human, not by the implementation engineer. See implementation-log.md.
+- Dependencies: IMP-007 (DONE) — satisfied
 - Requirement/AC traceability: FR-1 to FR-8, FR-10, AC-1 to AC-4, A-1, A-3, A-4, NFR-3 (markup assertions)
 - Architecture references: Section 14 item 2
 - Implementation scope: `order-tracking/tests/integration/lookup.test.ts`, `order-tracking/tests/integration/helpers.ts` (app factory with spy repository).
@@ -192,8 +200,9 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Prove that unsuccessful attempts reveal nothing about any order.
 - Priority: High
-- Status: BLOCKED. Blocking dependency: IMP-007
-- Dependencies: IMP-007
+- Status: DONE — ACCEPTED (human decision)
+- Acceptance: Human stated "I accept IMP-010." The decision was made by the human, not by the implementation engineer. See implementation-log.md.
+- Dependencies: IMP-007 (DONE) — satisfied
 - Requirement/AC traceability: AC-5, FR-9, FR-6, AC-2, A-1 (scoped existence claim), A-4
 - Architecture references: Sections 7, 8 (items 1 to 9), 14 item 2 (DR-001 comparison rule); ADR-3, ADR-4
 - Implementation scope: `order-tracking/tests/integration/dataProtection.test.ts`, `order-tracking/tests/unit/failureResultShape.test.ts` (if not already covered in IMP-005), `order-tracking/tests/integration/fixtureExposure.test.ts`.
@@ -206,8 +215,9 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Provide the smoke-level p95 check from architecture Section 10.
 - Priority: Medium
-- Status: BLOCKED. Blocking dependency: IMP-007
-- Dependencies: IMP-007
+- Status: DONE — ACCEPTED (human decision)
+- Acceptance: Human stated "I accept IMP-011." The decision was made by the human, not by the implementation engineer. Limitations remain: smoke check, not a load test; single run on a shared machine; no browser or mobile-network timing.
+- Dependencies: IMP-007 (DONE) — satisfied
 - Requirement/AC traceability: NFR-1, A-2
 - Architecture references: Section 10
 - Implementation scope: `order-tracking/tests/performance/p95.test.ts` (a mix of at least 200 sequential `POST /track` requests including success and failure, computing p95 of latency, asserting under 2000 ms); script `test:perf` in `order-tracking/package.json`.
@@ -220,8 +230,11 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Run Playwright flows and axe scans across browsers and viewports.
 - Priority: High
-- Status: BLOCKED. Blocking dependency: IMP-008
-- Dependencies: IMP-008
+- Status: DONE — ACCEPTED WITH KNOWN LIMITATIONS (human decision)
+- Acceptance: Human stated "I accept IMP-012." The decision was made by the human, not by the implementation engineer. Read as acceptance with known limitations recorded (interpretation stated in implementation-log.md).
+- Known limitations (not passing results): webkit and mobile-safari fail 20 tests; open CSP `upgrade-insecure-requests` / HSTS finding on plain-HTTP WebKit (F-1); 200% zoom not executed; manual checklist not performed; Edge and real-device Safari not run.
+- Not separately confirmed: playwright.config.ts readiness URL change `/health` to `/healthz`.
+- Dependencies: IMP-008 (DONE) — satisfied
 - Requirement/AC traceability: NFR-2, NFR-3, FR-1, FR-5, FR-6, FR-7, FR-10, AC-1 to AC-3
 - Architecture references: Sections 11, 14 items 3 and 4
 - Implementation scope: `order-tracking/tests/e2e/lookup.spec.ts` (happy path, not-found, missing field, format error; keyboard-only operation; focus moves to error summary on re-render), `order-tracking/tests/e2e/a11y.spec.ts` (axe-core scans on form, each error state, and result page asserting zero serious or critical violations; 320 px reflow no horizontal scroll check; touch target size check), `order-tracking/docs` is not touched; manual checklist file `order-tracking/tests/e2e/manual-checklist.md` (focus order, 200% zoom, 320 px reflow, screen reader spot check, real-device Safari, latest-two-versions coverage) with outcomes recorded in the implementation log.
@@ -234,8 +247,8 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Add basic technical throttling to reduce enumeration (architecture Section 8 item 10).
 - Priority: Low (optional; not an acceptance criterion, DR-005)
-- Status: BLOCKED. Blocking dependency: IMP-006
-- Dependencies: IMP-006
+- Status: DONE — ACCEPTED (human decision)
+- Dependencies: IMP-006 (DONE) — satisfied
 - Requirement/AC traceability: FR-9 / AC-5 hardening only; no requirement mandates it
 - Architecture references: Section 8 item 10, Section 17 observation
 - Implementation scope: `order-tracking/src/web/throttle.ts` (in-memory per-IP limiter on `POST /track`, limits via env vars with safe defaults); tests `order-tracking/tests/integration/throttle.test.ts`. When throttled, return a generic response that contains no order data and does not distinguish order existence.
@@ -248,7 +261,7 @@ IMP-006 -> IMP-013 -> IMP-014
 
 - Objective: Run the whole task-level regression suite and confirm the implementation is complete and self-contained before independent stages begin. This does not replace Code Review or Final Verification.
 - Priority: High
-- Status: BLOCKED. Blocking dependencies: IMP-009, IMP-010, IMP-011, IMP-012, IMP-013
+- Status: DONE — ACCEPTED (human decision: "I accept IMP-014."). Known limitations accepted: the 6 dev-tooling npm audit vulnerabilities from IMP-001 remain open (no audit fix run); the openssl CLI dependency for the e2e TLS proxy is unchecked in CI; e2e runs only over HTTPS through the proxy; the 200% zoom, screen-reader and focus-order checks and the manual checklist were not performed; Edge and real-device Safari were not tested; traceability shows FR-4 with no direct automated test and NFR-2 and NFR-3 as partial. Prior evidence: Clean install and full verification: rm -rf node_modules, npm ci, typecheck, build, npm test, test:perf, test:e2e all exit 0 (e2e 67 passed, 3 skipped, 0 failed); package-lock.json unchanged. See "Clean install and full verification" in implementation-log.md.
 - Dependencies: IMP-009, IMP-010, IMP-011, IMP-012, IMP-013
 - Requirement/AC traceability: FR-1 to FR-10, AC-1 to AC-5, NFR-1 to NFR-3
 - Architecture references: Sections 10, 13, 14

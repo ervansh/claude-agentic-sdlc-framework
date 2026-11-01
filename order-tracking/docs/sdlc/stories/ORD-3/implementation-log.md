@@ -49,7 +49,7 @@ Human acceptance recorded. The human stated: "I accept IMP-001." after reviewing
 
 ## IMP-002 Domain types and input normalizer
 
-Task Status: IMPLEMENTED — PENDING HUMAN ACCEPTANCE
+Task Status: IMPLEMENTED — ACCEPTED (human decision)
 
 ### Pre-existing state
 Before editing, order-tracking/src/ contained only config.ts and tests/unit/ only scaffold.test.ts (both IMP-001). No src/domain/ existed. All IMP-002 files were created in this run.
@@ -72,7 +72,639 @@ Modified: none (impl-plan.md/other source untouched in this run). Deleted: none.
 - Normalizer returns an empty string for empty order number; the required check is IMP-003.
 
 ### Acceptance
-Not accepted. Awaiting explicit human acceptance. impl-plan.md not modified by this run.
+ACCEPTED. The human stated: "I accept IMP-002." The decision was made by the human, not by the implementation engineer. The earlier "awaiting acceptance" status is superseded; the evidence above is unchanged.
+- impl-plan.md updated: IMP-002 marked DONE — ACCEPTED (human decision).
+- Newly dependency-eligible task promoted BLOCKED -> READY: IMP-003 (depends only on IMP-002). IMP-005 remains BLOCKED (IMP-003, IMP-004 not DONE).
+- No source, tests, or dependencies were changed during this acceptance step; no install, upgrade, audit, or audit-fix commands were run.
 
 ### Open Items
 - OPEN - npm audit finding (from the IMP-001 npm install): 6 vulnerabilities (3 moderate, 1 high, 2 critical) in dev tooling (vitest, vite, esbuild, tinypool chain). The automatic npm audit fix commands, including the forced variant, are NOT to be run. A human dependency-upgrade decision is pending for later.
+
+---
+
+## IMP-003 Validator
+
+Task Status: DONE — ACCEPTED (human decision). Earlier status was IMPLEMENTED — PENDING HUMAN ACCEPTANCE; see Acceptance section below.
+
+### Pre-existing state
+IMP-002 confirmed DONE — ACCEPTED in impl-plan.md. Before editing, src/domain/ held only types.ts and normalize.ts; no validate.ts, messages.ts, or validate.test.ts existed. All IMP-003 files were created in this run.
+
+### Files created (under order-tracking/)
+- src/domain/messages.ts (ORDER_NUMBER_PATTERN `^ORD[0-9]{7}$`; static MISSING_ORDER_NUMBER_MESSAGE and FORMAT_ERROR_MESSAGE, no interpolation)
+- src/domain/validate.ts (pure validateInput on NormalizedInput: empty -> MissingInput{field:"orderNumber"}; regex mismatch -> payload-free FormatError)
+- tests/unit/validate.test.ts (18 tests: empty/whitespace, too short/long, wrong prefix, non-digit, double separators, valid values, no value echo, static messages)
+
+Modified: none in source (impl-plan.md status updated). Deleted: none. IMP-002 outputs untouched. No dependency changes.
+
+### Commands run (from order-tracking/) and results
+| Command | Exit | Result |
+|---|---|---|
+| npm run typecheck | 0 | tsc --noEmit clean |
+| npx vitest run tests/unit/validate.test.ts | 0 | 1 file, 18 tests passed (vitest v2.1.9; Vite CJS deprecation warning only) |
+
+### Limitations / notes
+- Only the plan's verification commands were run; full npm test, build, and git status were not.
+- Message text wording is an implementation choice limited to the format description (A-4); rendering is deferred to IMP-007.
+- No npm install/audit/upgrade run. Prior npm audit open item remains.
+
+### Acceptance
+ACCEPTED. The human stated: "I accept IMP-003." The decision was made by the human, not by the implementation engineer. The earlier "pending human acceptance" status is superseded; the evidence above is unchanged.
+
+- impl-plan.md updated: IMP-003 marked DONE — ACCEPTED (human decision).
+- Newly dependency-eligible tasks promoted BLOCKED -> READY: none. IMP-005 depends on IMP-002, IMP-003, IMP-004 and stays BLOCKED until IMP-004 is DONE.
+- No source, tests, or dependencies were changed during this acceptance step; no install, audit, or audit-fix commands were run.
+
+---
+
+## IMP-004 Order model, repository interface, mock data
+
+Task Status: DONE — ACCEPTED (human decision). Earlier status was IMPLEMENTED — PENDING HUMAN ACCEPTANCE; see Acceptance section below.
+
+### Pre-existing state
+Dependency IMP-001 confirmed DONE — ACCEPTED in impl-plan.md. Before editing, order-tracking/src/ had no data/ directory; no OrderRepository, mockOrders, mockOrderRepository, or their test existed. All IMP-004 files were created in this run.
+
+### Files created (under order-tracking/)
+- src/data/OrderRepository.ts (Order and OrderStatus types; OrderRepository interface with findByOrderId(orderId): Promise<Order | undefined>; imports TrackingItem/TrackingDates types from src/domain/types.ts)
+- src/data/mockOrders.ts (5 fictional orders: PLACED, PROCESSING, SHIPPED, DELIVERED, plus a second SHIPPED order sharing last name "Smith" with ORD1000001; mixed-case last name "McDonald-Rivera"; optional dates exercised)
+- src/data/mockOrderRepository.ts (MockOrderRepository, Map-based lookup)
+- tests/unit/mockOrderRepository.test.ts (8 tests)
+
+Modified: none in source (impl-plan.md status updated). Deleted: none. IMP-002/IMP-003 outputs untouched (type-only import of types.ts). No dependency changes.
+
+### Commands run (from order-tracking/) and results
+| Command | Exit | Result |
+|---|---|---|
+| npm run typecheck | 0 | tsc --noEmit clean |
+| npx vitest run tests/unit/mockOrderRepository.test.ts | 0 | 1 file, 8 tests passed (vitest v2.1.9; Vite CJS deprecation warning only) |
+| git status --short | 0 | new untracked src/data/ and tests/unit/mockOrderRepository.test.ts, plus modified artifacts |
+
+### Limitations / notes
+- Only the plan's verification commands plus git status were run; full npm test and build were not.
+- The check that the fixture is not imported by static assets is deferred to IMP-010, per the plan.
+- Order type lives in src/data/OrderRepository.ts rather than src/domain/types.ts, to avoid modifying IMP-002 output.
+- No npm install/audit/upgrade run. Prior npm audit open item remains.
+
+### Acceptance
+ACCEPTED. The human stated: "I accept IMP-004." The decision was made by the human, not by the implementation engineer. The earlier "pending human acceptance" status is superseded; the evidence above is unchanged.
+
+- impl-plan.md updated: IMP-004 marked DONE — ACCEPTED (human decision).
+- Newly dependency-eligible tasks promoted BLOCKED -> READY: IMP-005 (dependencies IMP-002 DONE, IMP-003 DONE, IMP-004 DONE; all satisfied). IMP-006 was already READY (dependency IMP-001 DONE); no change.
+- No source, tests, or dependencies were changed during this acceptance step; no install, audit, or audit-fix commands were run.
+
+## IMP-005 View mapper and lookup service
+
+Task Status: DONE — ACCEPTED (human decision). Earlier status was IMPLEMENTED — PENDING HUMAN ACCEPTANCE; see Acceptance section below.
+
+### Pre-existing state
+Dependencies IMP-002, IMP-003, IMP-004 confirmed DONE — ACCEPTED in impl-plan.md. Before this run, order-tracking/src/domain/lookupOrder.ts and order-tracking/src/domain/toTrackingView.ts already existed as untracked files from an earlier interrupted IMP-005 run, with no logged evidence and no tests. I treated them as unverified. I reviewed both against the IMP-005 scope (toTrackingView maps only orderId, status, items, dates; lookupOrder has an injected repository, validation before data access, a single match step accepting order-number-only lookups, and a dummy-value compare when the order is absent). I found nothing to correct, so I did not modify either file in this run. Neither toTrackingView.test.ts nor lookupOrder.test.ts existed.
+
+### Files created by this run (under order-tracking/)
+- tests/unit/toTrackingView.test.ts (4 tests)
+- tests/unit/lookupOrder.test.ts (14 tests)
+
+### Pre-existing, unchanged by this run (reviewed and now covered by tests)
+- src/domain/toTrackingView.ts
+- src/domain/lookupOrder.ts
+
+Modified: none in source. Deleted: none. IMP-002/003/004 outputs untouched. No dependency changes.
+
+### Commands run (from order-tracking/, after final edit) and results
+| Command | Exit | Result |
+|---|---|---|
+| npm run typecheck | 0 | tsc --noEmit clean (tsconfig includes tests/unit, so the type-level assertions are compiled) |
+| npx vitest run tests/unit | 0 | 6 files, 57 tests passed (vitest v2.1.9; Vite CJS deprecation warning only) |
+| git status --short | 0 | untracked src/data/, src/domain/{lookupOrder,messages,toTrackingView,validate}.ts, tests/unit/{lookupOrder,mockOrderRepository,toTrackingView,validate}.test.ts; modified artifacts |
+
+An earlier first draft of lookupOrder.test.ts imported a non-existent factory name. I fixed it to use MockOrderRepository before any test run.
+
+### Test coverage vs plan
+Success with and without last name; whitespace-only last name treated as omitted; last-name mismatch and unknown order give identical NotFoundOrNotValidated; MissingInput; FormatError; FR-10 repository spy shows zero calls for MissingInput and FormatError; AC-4 variants (ord-1000001, " ORD 1000001 ", last name "  SMITH ") succeed; toTrackingView keys are exactly orderId, status, items, dates and a JSON scan finds no last name; failure results have only kind (plus field for MissingInput) at runtime; type-level assertions on failure variants.
+
+### Limitations
+- Timing equalization is best effort only; no timing guarantee is claimed and none is tested.
+- Only the plan's verification commands plus git status were run; build and full npm test were not.
+- No npm install/audit/upgrade run. Prior npm audit open item remains.
+
+### Acceptance
+ACCEPTED. The human stated: "I accept IMP-005." The decision was made by the human, not by the implementation engineer. The earlier "pending human acceptance" status is superseded; the evidence above is unchanged.
+- impl-plan.md updated: IMP-005 marked DONE — ACCEPTED (human decision).
+- Newly dependency-eligible tasks promoted BLOCKED -> READY: none. IMP-007 depends on IMP-005 (DONE) and IMP-006 (READY, not DONE) and stays BLOCKED. IMP-006 was already READY; no change.
+- No source, tests, or dependencies were changed during this acceptance step; no install, audit, or audit-fix commands were run.
+
+---
+
+## IMP-006 Express app shell, security middleware, safe logging, health
+
+Task Status: DONE — ACCEPTED (human decision). Earlier status was IMPLEMENTED — PENDING HUMAN ACCEPTANCE; see Acceptance section below.
+
+### Entry gate
+Plan APPROVED; IMP-006 was READY; dependency IMP-001 DONE — ACCEPTED (human decision), verified in impl-plan.md before starting.
+
+### Pre-existing state
+No `src/web/`, `src/server.ts`, or `tests/integration/` existed. Pre-existing and reused (not changed): `src/config.ts` (`getPort`), `src/data/mockOrderRepository.ts`, `OrderRepository` interface, package.json/tsconfig/vitest.config (express, helmet, nunjucks, supertest already declared and installed). No IMP-002 to IMP-005 outputs were modified.
+
+### Files created
+- order-tracking/src/web/app.ts: `createApp({ repository, logger?, behindProxy?, registerRoutes? })`; server-generated request ID (UUID, client header ignored); helmet defaults (CSP, HSTS) with `Referrer-Policy: no-referrer`; `x-powered-by` disabled; `GET /healthz` returns `{"status":"ok"}`; optional 308 HTTP->HTTPS redirect only when `behindProxy` (trust proxy 1; /healthz exempt); urlencoded parser with 4kb limit; static from `src/web/public`; Nunjucks configured with autoescape on (views dir `src/web/views`, no templates yet); `registerRoutes` hook for IMP-007 and tests; 404 and error handlers last.
+- order-tracking/src/web/logger.ts: `logOutcome(category, requestId)` only; emits JSON `{category, requestId}`; injectable sink.
+- order-tracking/src/web/errorHandler.ts: generic inline HTML error/404 page (no template dependency, no message/stack/data); 4xx status such as 413 preserved, otherwise 500; logs only the "error" category and request ID.
+- order-tracking/src/server.ts: reads PORT via `getPort`, `BEHIND_PROXY=true` enables proxy mode, uses MockOrderRepository.
+- order-tracking/tests/integration/app.test.ts (7 tests), order-tracking/tests/unit/logger.test.ts (2 tests).
+Modified: impl-plan.md and this log only. Deleted: none. No dependency changes.
+
+### Commands run (from order-tracking/, after final edit) and results
+| Command | Exit | Result |
+|---|---|---|
+| npm run typecheck | 0 | tsc --noEmit clean |
+| npx vitest run tests/integration/app.test.ts tests/unit/logger.test.ts | 0 | 2 files, 9 tests passed |
+| npm run build | 0 | tsc build succeeded (output suppressed) |
+| PORT=3917 npm start, then curl -i /healthz (server auto-stopped by timeout 6) | n/a | Server booted ("listening on port 3917"); /healthz returned 200 with CSP, HSTS, Referrer-Policy: no-referrer, nosniff, Cache-Control: no-store |
+| git status --short | 0 | new files untracked as listed; dist/ not shown (ignored) |
+
+### Test coverage vs plan
+healthz 200 without order data; helmet headers incl. Referrer-Policy no-referrer; oversized body gives 413 generic page; forced internal error gives generic 500 page with no stack or message and a single outcome-only log line; logger emits only category and requestId; plus 404 page, proxy-only HTTPS redirect, and per-request server-side request ID.
+
+### Limitations
+- Static dir and Nunjucks views dir are resolved from `process.cwd()/src/web`, so `npm start` must run from order-tracking/ (as the README/scripts do). `public/` and `views/` do not exist yet (IMP-007/IMP-010 own them); express.static tolerates the missing dir.
+- Routes, templates and `Cache-Control: no-store` for lookup responses are IMP-007 scope; no-store is currently set only on /healthz and error pages.
+- The oversized-body test also writes one "error" outcome line to stdout (outcome-only).
+- Full `npm test` and e2e not run; only the plan's verification commands plus build/boot smoke check. No npm install/audit/upgrade run.
+
+### Acceptance
+ACCEPTED. The human stated: "I accept IMP-006." The decision was made by the human, not by the implementation engineer. The earlier "pending human acceptance" status is superseded; the evidence above is unchanged.
+- impl-plan.md updated: IMP-006 marked DONE — ACCEPTED (human decision).
+- Newly dependency-eligible tasks promoted BLOCKED -> READY (dependencies verified in impl-plan.md): IMP-007 (IMP-005 DONE, IMP-006 DONE); IMP-013 (depends only on IMP-006 DONE). IMP-008 to IMP-012 and IMP-014 remain BLOCKED (their dependencies are not all DONE).
+- No source, tests, or dependencies were changed during this acceptance step; no install, audit, or audit-fix commands were run.
+
+## IMP-007 Routes and accessible templates (form, errors, tracking view)
+
+Task Status: DONE — ACCEPTED (human decision). Previously IMPLEMENTED — PENDING HUMAN ACCEPTANCE; the evidence below is unchanged.
+
+- Dependencies verified in impl-plan.md before start: IMP-005 DONE, IMP-006 DONE.
+- Pre-existing state: `src/web/app.ts` already provided the `registerRoutes` hook, Nunjucks (autoescape, `njk`), urlencoded parser, static `src/web/public`, helmet, and the generic error/404 handler. No routes, views, or `enhance.js` existed; `src/server.ts` did not pass `registerRoutes`.
+- Files created: `src/web/routes.ts`; `src/web/views/layout.njk`, `form.njk`, `tracking.njk`, `error.njk`; `src/web/public/enhance.js`; `tests/integration/routes.test.ts` (smoke tests, 5).
+- Files modified: `src/server.ts` (import and pass `registerRoutes` to `createApp`, the documented hook use). No other IMP-002 to IMP-006 file was changed.
+- Files deleted: none.
+- Behaviour: `GET /` and `GET /track` render the form; `POST /track` reads the body only (query string ignored), renders the tracking view directly (no redirect); all lookup responses are HTTP 200 with `Cache-Control: no-store`; failure messages are constants (not-found text defined once in `routes.ts`); order number retained in the form only for NotFound results when it passes the format pattern; last name never echoed; error summary has `role="alert"` and `tabindex="-1"`, focused by `enhance.js`; inline field error linked by `aria-describedby`; `autocomplete="off"`; "optional" in last-name label; `lang`, titles, headings, landmarks; tracking view uses a definition list plus an items table with headers and a link back. Logging uses the existing outcome-only logger.
+- Commands (run from order-tracking/):
+  - `npm run typecheck` -> exit 0
+  - `npm run build` -> exit 0 (plan lists build)
+  - `npm test` -> exit 0; 9 files, 71 tests passed (includes 5 new routes smoke tests)
+  - Boot check (`PORT=3917 npm start`, curl against localhost): GET / -> 200 with form; POST `ORD1000001` -> 200 tracking view (order ID, status PLACED, date; no last name in body); POST `ORD0000000` -> 200 generic not-found message; POST empty -> 200 "Order number is required."; POST `abc` -> 200 format message; `/enhance.js` -> 200. Server log showed only category and request ID lines. Server process was stopped afterwards. Note: `ORD-1234567` used first was a valid-format order not in the fixture and correctly returned the not-found message; the success path was then confirmed with a fixture ID.
+  - No npm install, audit, or upgrade was run. `dist` and `node_modules` are git-ignored.
+- Limitations: `error.njk` exists per plan but the IMP-006 error handler still renders its own inline generic page (not modified, out of scope), so `error.njk` is currently unused. `layout.njk` links no stylesheet (CSS is IMP-008). Browser/focus/accessibility behaviour was not verified in a browser (IMP-012). Dates display as the stored ISO `YYYY-MM-DD` strings. Full AC/data-protection suites belong to IMP-009 to IMP-011.
+
+### Acceptance
+ACCEPTED. The human stated: "I accept IMP-007." The decision was made by the human, not by the implementation engineer. The earlier "pending human acceptance" status is superseded; the evidence above is unchanged.
+- impl-plan.md updated: IMP-007 marked DONE — ACCEPTED (human decision).
+- Newly dependency-eligible tasks promoted BLOCKED -> READY (dependencies verified in impl-plan.md): IMP-008, IMP-009, IMP-010, IMP-011 (each depends only on IMP-007, now DONE). IMP-013 was already READY. IMP-012 (depends on IMP-008, not DONE) and IMP-014 (depends on IMP-009 to IMP-013, not DONE) remain BLOCKED.
+- No source, tests, or dependencies were changed during this acceptance step; no install, audit, or audit-fix commands were run.
+
+## IMP-009 Integration tests: AC-1 to AC-4, A-1, A-4
+
+Task Status: DONE — ACCEPTED (human decision). Previously IMPLEMENTED — PENDING HUMAN ACCEPTANCE; the evidence below is unchanged.
+
+- Dependency verified in impl-plan.md before start: IMP-007 DONE — ACCEPTED.
+- Pre-existing state: `tests/integration/routes.test.ts` (IMP-007 smoke, 5 tests) and `app.test.ts` (IMP-006) existed. `tests/integration/lookup.test.ts` and `helpers.ts` did not exist. No production code was touched.
+- Files created: `tests/integration/helpers.ts` (spy repository wrapping `MockOrderRepository`, records every `findByOrderId` call; `createTestApp()`), `tests/integration/lookup.test.ts` (26 tests, each title carrying its FR/AC/A ID).
+- Files modified: none under `src/` or `tests/`; this log and `impl-plan.md` (status only).
+- Files deleted: none.
+- Coverage: AC-1 success with and without last name (order ID, status, items, dates, 200, `no-store`, no redirect, last name not echoed); AC-2 unknown order generic message, 200, no details; AC-3 empty, whitespace and absent order number name "order number", zero repository calls; AC-4/A-3 normalization variants (lowercase, `ORD-`, `ORD `, padded whitespace, last name case/whitespace, combined) succeed in one submission; A-1 omitted/blank last name succeeds, wrong last name fails with message identical to unknown-order message; A-4/FR-10 malformed numbers show the format error (not generic), zero repository calls, submitted value not in body; GET `/track?orderNumber=` and POST with query-only identifiers perform no lookup; markup: `role="alert"`, label/input association, error summary, inline error with `aria-describedby`, `aria-invalid`, `lang`, titles, semantic tracking view.
+- Commands (from order-tracking/, after final edit):
+  - `npx vitest run tests/integration/lookup.test.ts` -> exit 0; 1 file, 26 tests passed
+  - `npm run typecheck` -> exit 0
+  - `npx vitest run` (full suite) -> 10 files, 97 tests passed
+  - No npm install, audit, or upgrade was run.
+- Findings: none; no product defect exposed.
+- Limitations: markup assertions are string/regex based on server-rendered HTML (no DOM parser, no browser; focus and accessibility behaviour belong to IMP-012). Success-view dates are asserted as the stored ISO strings. Data-protection (AC-5) suites belong to IMP-010.
+
+### Acceptance
+ACCEPTED. The human stated: "I accept IMP-009." The decision was made by the human, not by the implementation engineer. The earlier "pending human acceptance" status is superseded; the evidence above is unchanged.
+- impl-plan.md updated: IMP-009 marked DONE — ACCEPTED (human decision).
+- BLOCKED tasks checked against impl-plan.md: IMP-012 depends on IMP-008, which is READY (not DONE), so it stays BLOCKED. IMP-014 depends on IMP-009 to IMP-013; IMP-010, IMP-011, IMP-012, IMP-013 are not DONE, so it stays BLOCKED. No tasks were promoted.
+- No source, tests, or dependencies were changed during this acceptance step; no install, audit, or audit-fix commands were run.
+
+## IMP-010 Data-protection tests: AC-5 / FR-9
+
+Task Status: DONE — ACCEPTED (human decision)
+
+- Dependency verified in impl-plan.md before start: IMP-007 DONE — ACCEPTED.
+- Pre-existing state: `tests/integration/helpers.ts` (IMP-009 spy repository, `createTestApp()`), `lookup.test.ts`, `routes.test.ts`, `app.test.ts`, `tests/unit/logger.test.ts`, `lookupOrder.test.ts` existed. None of the three IMP-010 test files existed. `failureResultShape.test.ts` was created because payload-free result shape was not covered by name in an existing file. No production code under `src/` was touched.
+- Files created: `tests/integration/dataProtection.test.ts` (8 tests), `tests/integration/fixtureExposure.test.ts` (4 tests), `tests/unit/failureResultShape.test.ts` (4 tests). All titles include AC-5 / FR-9.
+- Files modified: none under `src/` or `tests/`; this log and `impl-plan.md` (IMP-010 status only).
+- Files deleted: none.
+- Coverage by plan item: (1) wrong-last-name vs unknown-order: same status, same headers (excluding `date`, `etag`), same message, byte-identical bodies after masking only the order-number input `value` attribute; test asserts the substitution occurred in both, that raw bodies differ, and that masked bodies are equal (no request token exists in the markup, so only the echo is masked). (2) every failure outcome (wrong last name, unknown, missing, format) scanned against all fixture last names, item names, dates, other order IDs and status words; submitted last name never echoed; `Cache-Control: no-store` on failures and success. (3) log capture via injected sink plus console spies: only `category` and `requestId` keys, expected categories, no last name/order number/partial/details, nothing else written to console. (4) result is exactly `{kind:"NotFoundOrNotValidated"}` for both failure causes (and `{kind:"FormatError"}`); not-found message literal appears once in `src`, in `routes.ts`. (5) no file under `src/web` references `mockOrders` or contains fixture values; known fixture/source paths (including traversal forms) return 404 without fixture data. (6) `Referrer-Policy: no-referrer` and CSP present; query-string identifiers cause no lookup. (7) forced error returns generic 500 page with no stack/message/data and a category+requestId-only log line; oversized body returns 413 without internals. (8) existence-oracle scope: indistinguishable with last name supplied; order-number-only attempts deliberately not asserted indistinguishable (A-1).
+- Commands (from order-tracking/, after final edit):
+  - `npx vitest run tests/integration/dataProtection.test.ts tests/integration/fixtureExposure.test.ts tests/unit/failureResultShape.test.ts` -> exit 0; 3 files, 16 tests passed
+  - `npm run typecheck` -> exit 0
+  - `npx vitest run` (full suite) -> exit 0; 13 files, 113 tests passed
+  - No npm install, audit, or upgrade was run.
+- Findings: none; no product defect exposed.
+- Limitations: markup and masking use string matching on server-rendered HTML (no DOM parser; DOM-structure equality is established via byte-identical masked bodies). Timing-based oracles are out of scope here (IMP-011). 413 handling for oversized bodies is asserted by status and absence of internals only. Status-word scan is case-sensitive uppercase.
+
+### Acceptance
+ACCEPTED. The human stated: "I accept IMP-010." The decision was made by the human, not by the implementation engineer. The earlier "pending human acceptance" status is superseded; the evidence above is unchanged.
+- impl-plan.md updated: IMP-010 marked DONE — ACCEPTED (human decision).
+- BLOCKED tasks checked against impl-plan.md: IMP-012 depends only on IMP-008, which is READY (not DONE), so it stays BLOCKED. IMP-014 depends on IMP-009 to IMP-013; IMP-011, IMP-012, IMP-013 are not DONE, so it stays BLOCKED. No tasks were promoted.
+- No source, tests, or dependencies were changed during this acceptance step; no install, audit, or audit-fix commands were run.
+
+## IMP-008 Responsive CSS and accessibility styling
+
+Task Status: DONE — ACCEPTED (human decision). Previously IMPLEMENTED — PENDING HUMAN ACCEPTANCE; the evidence below is unchanged.
+
+Dependency: IMP-007 DONE — ACCEPTED (verified in impl-plan.md).
+
+### Pre-existing state
+- `order-tracking/src/web/public/styles.css` did not exist. `layout.njk` had the viewport meta tag but no stylesheet link. `app.ts` already served `src/web/public` statically (IMP-007).
+
+### Files
+- Created: `order-tracking/src/web/public/styles.css` (mobile-first, fluid, no polyfills, `prefers-reduced-motion` respected).
+- Modified: `order-tracking/src/web/views/layout.njk` (added `<link rel="stylesheet" href="/styles.css">`; viewport meta confirmed present).
+- Deleted: none. No routing, business-logic, or IMP-002 to IMP-006 changes. No class changes were needed in other templates (element and id selectors used).
+- Also modified (task status only): `impl-plan.md`, this log.
+
+### Design against completion criteria
+- Reflow: fluid `main` (max-width 40rem, width 100%), `box-sizing: border-box`, inputs 100% wide, `overflow-wrap: anywhere`, table 100% width. Not browser-verified (see limitations).
+- Touch targets: inputs, submit button, and in-main links have min-height/min-width 44px.
+- Focus: 3px outline with 2px offset on links, inputs, buttons, and tabindex elements (including the error summary).
+- Errors not by colour alone: existing "Error:" text prefix and "There is a problem" heading retained; summary has heavy border and thick left bar; invalid input has 4px border; error text bold.
+- Contrast computed with a Node script (WCAG relative luminance formula): text/bg 17.40; muted/bg 9.74; link/bg 8.04; button white/blue 8.04; button hover 11.27; error/error-bg 8.35; error/white 9.28; header 11.38; text/table-head 15.00. Non-text: focus outline/bg 4.83, border/bg 7.00. All exceed 4.5:1 (3:1 for non-text).
+
+### Commands run (from order-tracking/)
+- `npm run typecheck` exit 0
+- `npm run build` exit 0
+- `npm test` exit 0: 13 files, 113 tests passed
+- `npx vitest run` exit 0: 13 files, 113 tests passed (no regression)
+- Smoke check: started `node dist/src/server.js` on PORT=3917; `GET /styles.css` returned 200 `text/css`; `GET /` HTML contained the stylesheet link; server stopped afterward.
+- Git status showed only expected changes; no generated artifacts newly appearing.
+
+### Limitations
+- The manual 320 px width and 200% zoom check was NOT executed: no browser was available to this agent. Reflow, horizontal-scroll, and zoom behaviour are by design only, and remain unverified until a browser check (IMP-012 or human check).
+- Visual appearance and focus-ring visibility were not viewed. The server was started from `dist` using `process.cwd()` as the web root, so it must run from `order-tracking/` (pre-existing IMP-007 behaviour).
+- Pre-existing tests do not assert the stylesheet; the evidence for CSS is the file diff, computed contrast, and the HTTP smoke check.
+
+### Acceptance
+ACCEPTED. The human stated: "I accept IMP-008." The decision was made by the human, not by the implementation engineer. The earlier "pending human acceptance" status is superseded; the evidence above is unchanged.
+- Carried forward: the browser checks (320 px reflow, 200% zoom, focus-ring visibility) were NOT executed and remain open; they are carried to IMP-012 or a manual human check.
+- impl-plan.md updated: IMP-008 marked DONE — ACCEPTED (human decision).
+- BLOCKED tasks checked against impl-plan.md: IMP-012 depends only on IMP-008, now DONE, so it is promoted BLOCKED -> READY. IMP-014 depends on IMP-009 to IMP-013; IMP-011, IMP-012, IMP-013 are not DONE, so it stays BLOCKED.
+- No source, tests, or dependencies were changed during this acceptance step; no install, audit, or audit-fix commands were run.
+
+## IMP-012 Browser E2E and accessibility checks (NFR-2, NFR-3)
+
+Task Status: DONE — ACCEPTED WITH KNOWN LIMITATIONS (human decision; see Human Acceptance below). Originally reported as IMPLEMENTED — PENDING HUMAN ACCEPTANCE. BROWSER VERIFICATION INCOMPLETE: WebKit and mobile-safari (iPhone 12) projects FAIL 20 tests (see Findings). Chromium, Firefox and mobile-chrome pass. The task is not fully verified.
+
+### Pre-existing state
+- Dependency IMP-008 was DONE — ACCEPTED. `@playwright/test` and `@axe-core/playwright` were already in package.json and `playwright.config.ts` existed (IMP-001). `tests/e2e/` did not exist. Playwright browser binaries were not installed (only ffmpeg-1011 and winldd-1007 in the ms-playwright cache).
+
+### Files created
+- `order-tracking/tests/e2e/lookup.spec.ts` (happy path, not-found, missing field, format error, focus to error summary, keyboard-only flow)
+- `order-tracking/tests/e2e/a11y.spec.ts` (axe scans with wcag2a/2aa/21a/21aa tags on form, three error states, result page asserting zero serious or critical; 320 px no horizontal scroll; 44 px touch targets; focus outline computed style)
+- `order-tracking/tests/e2e/manual-checklist.md` (checklist items left unchecked)
+### Files modified
+- `order-tracking/playwright.config.ts`: webServer readiness URL changed from `/health` to `/healthz` (the app exposes `/healthz`; the original value made `npm run test:e2e` time out after 60 s, first run exit 1). Test config only; no `src/` changes.
+### Files deleted
+- none
+
+### Commands and results (from order-tracking/)
+- `npx playwright install` exit 0: downloaded Chromium, Chromium headless shell, Firefox, WebKit 27.2, FFmpeg to the user ms-playwright cache. No npm install/audit was run.
+- `npm run test:e2e` (first run, before config fix) exit 1: "Timed out waiting 60000ms from config.webServer."
+- `npm run test:e2e` (after config fix) exit 1: 47 passed, 3 skipped, 20 failed. All 20 failures are in the `webkit` (10) and `mobile-safari` (10) projects.
+- `npx vitest run` exit 0: 13 files, 113 tests passed.
+- `npm run typecheck` exit 0.
+- Git status: only the files above plus pre-existing uncommitted work; `dist/`, `test-results/` did not appear as untracked changes.
+
+### Browsers
+- Ran and passed: chromium (Desktop Chrome), firefox (Desktop Firefox), mobile-chrome (Pixel 5).
+- Ran and FAILED: webkit (Desktop Safari), mobile-safari (iPhone 12): 10 failures each (axe error states and result page, happy path, not-found, missing, format, focus-to-summary, touch target size).
+- Not run: Microsoft Edge channel (not configured in playwright.config.ts and not installed), real-device Safari, latest-two-versions coverage.
+- Skipped by design: keyboard-only test is skipped on touch-emulated projects and WebKit (3 skips).
+
+### Findings (not fixed; src/ untouched)
+- F-1 (WebKit only, apparent defect in IMP-007 security headers interacting with plain-HTTP serving): responses carry `Content-Security-Policy: ...;upgrade-insecure-requests` and `Strict-Transport-Security` (helmet defaults, verified with curl). In Playwright WebKit over `http://localhost:3000`, the form POST navigated to `https://localhost:3000/track` (Playwright call log) and the result page never rendered; the touch-target failure (22 px, stylesheet absent) is consistent with the stylesheet also being upgraded to https and failing. Chromium and Firefox exempt localhost. Cause is inferred from the call log and headers, not independently proven. In production, TLS would serve these requests over https, so real impact is likely limited to local/plain-HTTP WebKit testing; the owner of IMP-007 should decide whether to adjust headers for non-TLS environments, or the test harness should serve WebKit over HTTPS.
+- Because of F-1, WebKit/mobile-safari results for axe, 320 px and focus ring are not valid evidence either way.
+
+### Carry-forward from IMP-008
+- 320 px reflow (automated, form, result and format-error pages): passed on chromium, firefox, mobile-chrome; WebKit projects not meaningfully executed (F-1).
+- Focus-ring visibility (computed outline style/width on input and button): passed on chromium, firefox, mobile-chrome; WebKit not valid.
+- 200% zoom: NOT executed (manual checklist item, not automated).
+
+### Manual checklist
+Not performed: focus order, 200% zoom, 320 px manual, screen reader, real-device Safari, latest-two-versions. Reason: no human or device available to this agent. Axe does not prove full WCAG 2.1 AA conformance.
+
+### Limitations
+- Automated axe run only covers pages exercised and rules in the listed tags.
+- (Superseded by the Human Acceptance section below: acceptance has now been recorded.)
+
+### Human Acceptance
+Task Status: DONE — ACCEPTED WITH KNOWN LIMITATIONS (human decision).
+
+- Human statement (verbatim): "I accept IMP-012."
+- The decision was made by the human, not by the implementation engineer.
+- Interpretation: before accepting, the human had the implementation evidence in view (WebKit and mobile-safari failing 20 tests, the open CSP/HSTS finding on plain-HTTP WebKit, 200% zoom not executed, manual checklist not performed) and was offered (1) accept with these recorded as known limitations, (2) keep the task open to fix WebKit, or (3) something else. The reply was unqualified, so it is read as option 1. This is an interpretation of the statement, not an explicit selection by the human.
+
+Accepted known limitations (these are NOT passing results):
+- KL-1: webkit (Desktop Safari) and mobile-safari (iPhone 12) projects FAIL 20 tests (10 each). Browser verification on WebKit is not achieved.
+- KL-2: Open finding F-1: CSP `upgrade-insecure-requests` and HSTS (helmet defaults) on plain-HTTP WebKit; cause inferred, not proven; no change made to src/ headers or to the test harness. Remains open.
+- KL-3: 200% zoom was not executed.
+- KL-4: Manual checklist (`tests/e2e/manual-checklist.md`) was not performed.
+- KL-5: Microsoft Edge and real-device Safari were not run.
+- KL-6: WebKit-project results for axe, 320 px and focus ring are not valid evidence either way.
+
+Change requiring separate confirmation:
+- `order-tracking/playwright.config.ts` (webServer readiness URL `/health` changed to `/healthz`) was made by the implementer outside IMP-012's own test files. The human was asked to confirm it separately, and the acceptance statement does not clearly confirm it. Status: NOT SEPARATELY CONFIRMED.
+
+Plan state updates (verified against impl-plan.md dependencies):
+- IMP-012 marked DONE — ACCEPTED WITH KNOWN LIMITATIONS in impl-plan.md.
+- Only BLOCKED task is IMP-014 (depends on IMP-009 to IMP-013). IMP-009, IMP-010, IMP-012 are DONE, but IMP-011 and IMP-013 are READY (not DONE), so IMP-014 stays BLOCKED. No tasks were promoted.
+- READY tasks: IMP-011, IMP-013.
+- No source, test, or config files were changed during this acceptance step; no install, audit, playwright install, or audit-fix commands were run. All earlier IMP-012 evidence above is unchanged.
+
+## IMP-011 Performance smoke test (NFR-1)
+
+Task Status: DONE — ACCEPTED (human decision). Implemented earlier as IMPLEMENTED — PENDING HUMAN ACCEPTANCE; evidence below is unchanged.
+
+- Entry gate: plan APPROVED; IMP-011 was READY; dependency IMP-007 was DONE — ACCEPTED.
+- Pre-existing state: no `tests/performance/` directory, no `test:perf` script, no perf config existed. `tests/integration/helpers.ts` (`createTestApp()`) was reused unchanged. No production code under `src/` was touched.
+- Files created: `order-tracking/tests/performance/p95.test.ts`; `order-tracking/vitest.perf.config.ts` (separate config so the perf test is not run inside the default unit/integration suite, where concurrent files would perturb timing; the default `vitest.config.ts` is unchanged and `npm test` does not run the perf test).
+- Files modified: `order-tracking/package.json` (added script `test:perf`: `vitest run --config vitest.perf.config.ts --reporter=verbose`); this log; `impl-plan.md` (IMP-011 status only).
+- Files deleted: none.
+- Test design: app started once on an ephemeral 127.0.0.1 port; 10 warm-up requests (excluded), then 250 sequential `POST /track` (plan minimum 200) rotating over six inputs: success with last name, success without last name, wrong last name, unknown order, format error, missing order number. Latency measured per request with `performance.now()`; p95 (nearest-rank) asserted < 2000 ms (NFR-1 / A-2 target, unchanged). Guards assert at least one 200 and no 429 (limiter not throttling).
+- Commands executed (from order-tracking/):
+  - `npm run test:perf` -> exit 0; 1 file, 1 test passed.
+  - `npx vitest run` -> exit 0; 13 files, 113 tests passed (no regression; perf test not part of this run).
+  - `npm run typecheck` -> exit 0.
+  - `git status --short`: new `tests/performance/`, `vitest.perf.config.ts`, modified `package.json`. (`src/` entries are untracked from earlier tasks, not changed here.)
+- Measured numbers (single run, local Windows machine): n=250, p50=1.28 ms, p95=2.40 ms, max=3.56 ms; threshold 2000 ms. Status counts: 250 x HTTP 200 (failure outcomes render the form/message with 200 in this app, so status code does not distinguish them).
+- Limitations: smoke check against in-memory mock data on a shared local machine, in-process loopback; NOT a load test (sequential, no concurrency), NOT a mobile-network or browser end-to-end measurement; the threshold is very loose relative to the measured value, so it detects only gross regressions. Timings are noisy and from one run. Each request also writes a safe log line to stdout, included in the measured time.
+- Findings: none against IMP-002 through IMP-009 outputs.
+- Not marked accepted or DONE at implementation time; awaiting human acceptance (superseded by the acceptance record below).
+
+### IMP-011 Human Acceptance
+
+- Acceptance: ACCEPTED. Human statement (verbatim): "I accept IMP-011."
+- The decision was made by the human, not by the implementation engineer.
+- Recorded limitations remain in force: smoke check against mock data, not a load test; single run on a shared local machine; no browser or mobile-network timing.
+- impl-plan.md updated: IMP-011 marked DONE — ACCEPTED (human decision) in the summary table and task section.
+- BLOCKED tasks checked against impl-plan.md: the only BLOCKED task is IMP-014, which depends on IMP-009 to IMP-013. IMP-009, IMP-010, IMP-011, IMP-012 are DONE, but IMP-013 is READY (not DONE), so IMP-014 stays BLOCKED. No tasks were promoted.
+- READY tasks: IMP-013.
+- No source, test, or config files were changed during this acceptance step; no install, audit, playwright install, or audit-fix commands were run.
+
+## IMP-013 Optional per-IP request throttling
+
+Task Status: IMPLEMENTED — PENDING HUMAN ACCEPTANCE
+
+- Dependency IMP-006: DONE — ACCEPTED (confirmed in impl-plan.md before starting).
+- Pre-existing state: no throttle code, no `throttle.ts`, no throttle test existed. `src/server.ts` (untracked, from earlier tasks) passed `registerRoutes` directly to `createApp`.
+- Files created: `order-tracking/src/web/throttle.ts` (in-memory fixed-window per-IP limiter; `THROTTLE_MAX` default 60, `THROTTLE_WINDOW_MS` default 60000, invalid values fall back to defaults; `withThrottle` wrapper registers the limiter on `POST /track` only), `order-tracking/tests/integration/throttle.test.ts` (6 tests).
+- Files modified: `order-tracking/src/server.ts` (wiring only: `registerRoutes` wrapped with `withThrottle(registerRoutes, getThrottleOptions())`). `app.ts`, `routes.ts` and all IMP-002..012 logic untouched.
+- Throttled response: HTTP 429, plain text "Too many requests. Please try again later.", `Retry-After`, `Cache-Control: no-store`. Identical regardless of input; no order data. This wording is a placeholder, not a product decision.
+- Commands run (from order-tracking/):
+  - `npx vitest run tests/integration/throttle.test.ts` — exit 0, 6/6 passed.
+  - `npm test` (piped to tail) — 14 files, 119 tests passed. Exit code shown was that of `tail`; pass result is from the vitest summary.
+  - `npx vitest run` (piped to tail) — 14 files, 119 tests passed; same exit-code caveat.
+  - `npm run typecheck` (piped to tail) — tsc --noEmit printed no errors.
+- Behavior check: test "does not alter non-throttled lookup output" shows status and body of an unthrottled lookup are byte-identical with and without the throttle. No finding raised.
+- Limitations: state is per-process in memory (resets on restart, not shared across instances); IP is `req.ip`, so behind a proxy it depends on `BEHIND_PROXY` trust-proxy setting; IMP-011 performance test and IMP-010 comparisons use `createTestApp` without throttling, so they are unaffected by construction. Playwright e2e was not re-run (not required by the plan); e2e traffic via `server.ts` is well under the default 60 requests per minute but this was not measured. Customer-visible throttle wording remains a candidate follow-up for Requirements Analysis.
+
+### Re-run without pipes
+
+The earlier IMP-013 results for `npm test`, `npx vitest run`, and `npm run typecheck` were piped through `tail`, so the exit codes shown then were `tail`'s, not the commands'. The results below were run directly from `order-tracking/` with no pipe, and they supersede the earlier results. No source, test, or config file was changed for this re-run. This is evidence-only.
+
+| Command | Exit code | Summary line |
+| --- | --- | --- |
+| `npm test` | 0 | Test Files 14 passed (14); Tests 119 passed (119) |
+| `npx vitest run` | 0 | Test Files 14 passed (14); Tests 119 passed (119) |
+| `npm run typecheck` | 0 | `tsc -p tsconfig.json --noEmit` printed no errors |
+
+Notes:
+- Exit codes were captured with `echo "EXIT=$?"` immediately after each command.
+- While preparing this re-run, `npx vitest run` was also executed two extra times that did not match the specified form (once with output redirected to /dev/null, once with `--reporter=dot`). Both exited 0 with 14 files / 119 tests passed. They are not counted in the table; the table row comes from a plain `npx vitest run` run with no redirect and no flags.
+- Task status at the time of this re-run: IMPLEMENTED — PENDING HUMAN ACCEPTANCE (superseded by the Human Acceptance section below).
+
+### IMP-013 Human Acceptance
+
+Task Status: DONE — ACCEPTED (human decision). Earlier status was IMPLEMENTED — PENDING HUMAN ACCEPTANCE.
+
+- Acceptance: ACCEPTED. Human statement (verbatim): "I accept IMP-013."
+- The decision was made by the human, not by the implementation engineer.
+- Recorded limitations remain in force: throttle state is per-process in memory (resets on restart, not shared across instances); the client IP is `req.ip`, so behind a proxy it depends on the `BEHIND_PROXY` setting; the Playwright e2e suite was not re-run after this change; throttle wording is a placeholder and remains an open question for Requirements Analysis.
+- impl-plan.md updated: IMP-013 marked DONE — ACCEPTED (human decision) in the summary table and task section.
+- BLOCKED tasks checked against impl-plan.md: the only BLOCKED task was IMP-014, which depends on IMP-009 to IMP-013. IMP-009, IMP-010, IMP-011, IMP-012, IMP-013 are all DONE, so IMP-014 is promoted BLOCKED -> READY.
+- READY tasks: IMP-014.
+- No source, test, or config files were changed during this acceptance step; no tests, builds, install, audit, playwright install, or audit-fix commands were run.
+
+## IMP-014 Implementation regression and readiness checks
+
+Task Status: IMPLEMENTED — PENDING HUMAN ACCEPTANCE (readiness re-run: all six commands exit 0; see "Readiness re-run" at the end of this section). Not accepted, not DONE. The earlier BLOCKED — FAILED CHECK entries below are historical.
+
+### Pre-existing state
+- IMP-009 to IMP-013 were DONE in impl-plan.md before starting. Product code, tests, and config were all left unchanged by this task.
+
+### Files
+- Created: none. Modified: this log and impl-plan.md (status only). Deleted: none.
+- No file under `src/`, `tests/`, or any config was changed. `git status` after the runs showed only pre-existing modified/untracked paths; generated output (`dist/`, `test-results/`) did not appear in `git status`.
+
+### Commands (each run directly from `order-tracking/`; no pipe on the command itself)
+| Command | Exit code | Summary |
+| --- | --- | --- |
+| `rm -rf node_modules && npm ci` | NOT RUN | Skipped. The instruction for this run forbids installs, and a failed re-install would leave the workspace without dependencies. The clean-install requirement of the plan is therefore UNVERIFIED. |
+| `npm run typecheck` | 0 | `tsc -p tsconfig.json --noEmit` printed no errors |
+| `npm run build` | 0 | `tsc -p tsconfig.json` printed no errors. (The command line was preceded by an unrelated `git status ... \| head -0` no-op; exit code is from `echo $?` after `npm run build`.) |
+| `npm test` | 0 | Test Files 14 passed (14); Tests 119 passed (119) |
+| `npm run test:perf` | 0 | Test Files 1 passed (1); Tests 1 passed (1); `PERF-SMOKE n=250 p50=1.39ms p95=2.59ms max=3.34ms limit=2000ms` |
+| `npm run test:e2e` | 1 | 20 failed, 3 skipped, 47 passed (1.0m). Output was redirected to a file (no pipe) so the real exit code was captured. |
+
+### E2E result detail
+- Failed (20): all in `webkit` (10) and `mobile-safari` (10): a11y.spec.ts lines 23, 29, 35, 41 (axe scans on error states and result page), a11y.spec.ts:61 (touch targets 44px), lookup.spec.ts lines 10, 19, 26, 33, 40 (happy path, not found, missing, format, focus on error summary). Failures are `toBeVisible`, `toContainText`, and `toBeFocused` assertions.
+- These are the same 20 tests that failed in IMP-012 (accepted there with a known limitation). They are recorded here as actual failures, not re-labeled as passing. The plan's completion criterion is "all suites pass", so the readiness check fails.
+- Browsers that ran with passing tests: the 47 passes belong to the other configured projects (not itemized here). Webkit and mobile-safari did run and failed. 3 tests were skipped (conditional skips in the specs; not investigated in this task).
+
+### Known limitations carried (not hidden)
+- WebKit / mobile-safari 20 failures above. Open finding: CSP `upgrade-insecure-requests` and HSTS on plain-HTTP WebKit (consistent with the failures, but root cause not re-confirmed in this task).
+- npm audit findings from IMP-001 (6 vulnerabilities in dev tooling) remain open; no audit was run and no audit fix was applied.
+- The `playwright.config.ts` readiness URL change (`/health` to `/healthz`) was not separately confirmed by the human.
+- 200% zoom and the manual checklist were not executed. Real-device Safari and mobile-network timing were not tested.
+- Requirement-to-test traceability listing and the README run/test update, listed in the plan scope, were not produced in this run: the run was limited to verification and stopped on the failed check.
+
+### Findings
+- F-014-1: `npm run test:e2e` fails (20 tests, webkit and mobile-safari). Needs a human decision: fix in IMP-007/IMP-006/IMP-012 scope, or explicitly waive the criterion.
+- F-014-2: Clean install (`npm ci`) not verified.
+
+### IMP-014 WebKit fix cycle
+
+Scope: targeted fix cycle for the WebKit and mobile-safari e2e failures. Not a new lifecycle task. IMP-014 status in impl-plan.md is unchanged (BLOCKED — FAILED CHECK) pending human review.
+
+Root-cause evidence (reproduced with a throwaway Playwright script against the unmodified production build on http://localhost:3000, then deleted):
+- WebKit: GET http://localhost:3000/ returned 200 with `Content-Security-Policy: ...upgrade-insecure-requests` and `Strict-Transport-Security: max-age=31536000; includeSubDomains`. WebKit then requested https://localhost:3000/styles.css and https://localhost:3000/enhance.js (both failed: "SSL connect error"), and the form submit became POST https://localhost:3000/track (failed: "SSL connect error"). The page stayed on http://localhost:3000/. The same happened with http://127.0.0.1:3000.
+- Chromium, same app and same headers: styles.css and enhance.js loaded over http (200), POST http://localhost:3000/track returned 200, final URL /track.
+- Cause: the production CSP `upgrade-insecure-requests` directive is honored by WebKit on plain-http localhost (Chromium and Firefox exempt localhost). The server returned no redirect (no Location header); this is browser-side upgrading, not a server HTTP->HTTPS redirect. The missing stylesheet explains the 22 px touch-target measurement. The inferred causes in the IMP-012/IMP-014 evidence are now confirmed.
+- The /health -> /healthz readiness change is correct: src/web/app.ts defines only /healthz. It is retained.
+
+Changes (test harness only; no production code, CSP, HSTS, or helmet change):
+- order-tracking/tests/e2e/support/tls-proxy.mjs (new): test-only TLS-terminating reverse proxy on port 3443 (override E2E_TLS_PORT) forwarding to the app on PORT; uses a throwaway self-signed cert generated at startup with the `openssl` CLI into the OS temp dir (nothing committed); passes app responses through unmodified.
+- order-tracking/playwright.config.ts (modified): baseURL is now https://localhost:3443 with ignoreHTTPSErrors for all five projects; webServer is now an array (app server with /healthz readiness, plus the TLS proxy with its own readiness URL).
+- No test file or assertion was changed, skipped, or deleted. The 3 skips (keyboard-only operation on mobile-chrome, mobile-safari, webkit) are pre-existing skip conditions in lookup.spec.ts.
+
+Commands (run directly, no pipes; output redirected to files where noted):
+- `npm run test:e2e` (output redirected to a file): exit 0. 70 tests: 67 passed, 3 skipped, 0 failed.
+- `npx vitest run`: exit 0. 119 tests passed (119).
+- `npm run typecheck`: exit 0.
+- Diagnostic script runs: exit 0 (evidence above).
+
+Per-browser e2e results (14 tests each):
+- chromium: 14 passed
+- firefox: 14 passed
+- webkit: 13 passed, 1 skipped (pre-existing skip), 0 failed (previously 10 failed)
+- mobile-chrome: 13 passed, 1 skipped (pre-existing skip), 0 failed
+- mobile-safari: 13 passed, 1 skipped (pre-existing skip), 0 failed (previously 10 failed)
+
+Limitations:
+- The harness now requires the `openssl` CLI on the PATH (available here: OpenSSL 3.2.2 via Git for Windows). Not verified on CI images.
+- e2e now runs over HTTPS via the proxy, so it does not exercise plain-http serving; production HTTPS is expected to be terminated by a proxy (BEHIND_PROXY=true), which matches this setup.
+- The behindProxy HTTP->HTTPS redirect path is not exercised by e2e (the proxy does not set it); it remains covered by existing integration tests.
+- Git status after runs: only the files above plus pre-existing uncommitted work; test-results/ is ignored. Temporary output files were removed.
+
+Human decision needed: review of this cycle and IMP-014 status. No production header change is required or proposed.
+
+### Harness approval
+
+The human accepted the test-harness approach (TLS proxy on port 3443, the https projects in playwright.config.ts, no production change) in the words "Accept the test-harness approach". This approval does not cover the clean `npm ci`, which the human has not yet approved. The clean install check is therefore not run.
+
+### Readiness re-run
+
+Entry gate: impl-plan.md shows IMP-009, IMP-010, IMP-011, IMP-013 as DONE — ACCEPTED and IMP-012 as DONE — ACCEPTED WITH KNOWN LIMITATIONS. No file under src/, tests/, or any config/harness file was changed in this re-run. No install, audit, playwright install, or upgrade command was run. Each command was run from `order-tracking/`; vitest and e2e output was redirected to temp files (no pipes) where noted.
+
+| Command | Exit code | Summary |
+| --- | --- | --- |
+| `npm run typecheck` | 0 | `tsc -p tsconfig.json --noEmit`, no errors |
+| `npm run build` | 0 | `tsc -p tsconfig.json`, no errors |
+| `npm test` | 0 | Test Files 14 passed (14); Tests 119 passed (119) |
+| `npx vitest run` (output redirected to a temp file) | 0 | Test Files 14 passed (14); Tests 119 passed (119) |
+| `npm run test:perf` | 0 | Test Files 1 passed (1); Tests 1 passed (1); `PERF-SMOKE n=250 p50=1.37ms p95=2.15ms max=2.88ms limit=2000ms statuses={"200":250}` |
+| `npm run test:e2e` (output redirected to a temp file) | 0 | 70 tests: 67 passed, 3 skipped, 0 failed (26.6s) |
+| `rm -rf node_modules && npm ci` | NOT RUN | Not approved by the human; see Harness approval. |
+
+E2E per-project counts (14 tests each, read from the redirected output file):
+- chromium: 14 passed, 0 skipped, 0 failed
+- firefox: 14 passed, 0 skipped, 0 failed
+- webkit: 13 passed, 1 skipped, 0 failed
+- mobile-chrome: 13 passed, 1 skipped, 0 failed
+- mobile-safari: 13 passed, 1 skipped, 0 failed
+
+The 3 skips are the pre-existing keyboard-only operation skips (lookup.spec.ts:47) on mobile-chrome, mobile-safari, and webkit.
+
+Status: IMPLEMENTED — PENDING HUMAN ACCEPTANCE. All six commands exited 0. Not accepted and not DONE; the acceptance decision belongs to the human.
+
+Known limitations that remain:
+- The clean `npm ci` is not run (not approved by the human); the clean-install requirement of the plan is unverified.
+- The `openssl` CLI is a harness dependency (TLS proxy certificate generation); its availability on CI is unchecked.
+- The e2e suite runs only over HTTPS through the proxy; plain-http serving is not exercised by e2e.
+- The 200% zoom check and the manual checklist were not executed.
+- Real-device Safari and mobile-network timing were not tested.
+- The npm audit findings from IMP-001 remain open; no audit fix was run.
+- The playwright.config.ts harness change is confirmed by the human as the test-harness approach.
+- Also still not produced in this run: the requirement-to-test traceability listing and the README run/test update from the plan scope. (Superseded: both were produced in the next subsection, "IMP-014 Documentation scope items".)
+
+### IMP-014 Documentation scope items (README update and traceability listing)
+
+Documentation only. Files changed: `order-tracking/README.md` and this log. No file under `src/`, `tests/`, or any config was changed; impl-plan.md and the IMP-014 status were not touched. No command was run to produce this section (test files, package.json, playwright.config.ts, and the tls-proxy script were read only). Test counts were not re-run here; the last recorded results are in "Readiness re-run" above. IMP-014 remains IMPLEMENTED — PENDING HUMAN ACCEPTANCE (not accepted, not DONE); the clean `npm ci` check is still unverified.
+
+#### README changes
+- Rewrote the command block into sections: Setup, Run, Check and test, End-to-end tests.
+- Every script name was checked against `package.json`: build, start, dev, typecheck, test, test:unit, test:integration, test:perf, test:e2e.
+- Added `test:perf` (previously missing) and noted that `npm test` excludes `tests/performance/` and `tests/e2e/`.
+- Added the e2e harness note: TLS proxy on port 3443 (`E2E_TLS_PORT`) requires the `openssl` CLI; app on `PORT`; the WebKit CSP reason. `npx playwright install` is mentioned as a one-time prerequisite note only (not run).
+- Added `BEHIND_PROXY=true` (read in `src/server.ts`; the redirect and `/healthz` exemption are in `src/web/app.ts`) and a pointer to `tests/e2e/manual-checklist.md`.
+
+#### Requirement-to-test traceability
+
+Paths are under `order-tracking/tests/`. Mapping confirmed by reading test titles and describe blocks.
+
+| Req | Automated evidence | Gap / note |
+| --- | --- | --- |
+| FR-1 Web entry point | `integration/lookup.test.ts` describe "FR-1 / FR-4 identifiers only via POST body" (both tests); `integration/routes.test.ts` "GET / renders the form", "ignores identifiers in the query string" | none |
+| FR-2 Order number required, ORD + 7 digits | `unit/validate.test.ts` describe "validateInput" (it.each empty/whitespace, malformed shapes, "%j passes"); `unit/lookupOrder.test.ts` "returns FormatError for malformed order numbers", "returns MissingInput for empty and whitespace-only order number"; `integration/lookup.test.ts` "A-4 rejects non-conforming shapes without any lookup" | none |
+| FR-3 Last name optional secondary identifier | `unit/lookupOrder.test.ts` "succeeds with matching last name", "succeeds without last name (order-number-only, A-1)", "treats whitespace-only last name as omitted", "returns NotFoundOrNotValidated on last-name mismatch", "does not let a shared last name cross orders"; `unit/mockOrderRepository.test.ts` "FR-3: fixture has a shared last name across orders", "FR-3: fixture has a mixed-case last name"; `integration/lookup.test.ts` describe "A-1 optional last name" | none |
+| FR-4 No authentication | None direct. Implicit only: every lookup in `integration/lookup.test.ts` and `integration/routes.test.ts` is sent with no credentials and succeeds. The describe "FR-1 / FR-4 ..." covers identifiers via POST body, not authentication. | No test asserts the absence of an auth requirement. Weak, implicit evidence only. |
+| FR-5 Tracking view: status, items, dates, order ID | `integration/lookup.test.ts` "AC-1 returns the tracking view with a last name: id, status, items, dates, ...", "NFR-3 / FR-5 tracking view uses semantic headings ..."; `unit/toTrackingView.test.ts` "returns exactly orderId, status, items, dates", "maps values and preserves optional dates"; `unit/mockOrderRepository.test.ts` "FR-5: fixture covers every status", "FR-5: fixture exercises optional dates"; `e2e/lookup.spec.ts` "happy path shows tracking view" | none |
+| FR-6 No match: no details, generic message | `integration/lookup.test.ts` describe "AC-2 / FR-6 unknown order", "A-1 / FR-6 supplied wrong last name fails with the generic message and no details", "A-1 / FR-6 wrong last name and unknown order produce identical failure messages"; `unit/lookupOrder.test.ts` "returns the same result for unknown order and mismatch"; `e2e/lookup.spec.ts` "not found shows generic message in error summary" | none |
+| FR-7 Missing order number blocks lookup, names field | `integration/lookup.test.ts` describe "AC-3 / FR-7 missing order number" (both tests), "NFR-3 / FR-7 error re-render has role=alert ..."; `unit/lookupOrder.test.ts` "returns MissingInput for empty and whitespace-only order number"; `e2e/lookup.spec.ts` "missing order number shows required message" | none |
+| FR-8 Normalization | `unit/normalize.test.ts` describes "normalizeOrderNumber (FR-8, A-3, AC-4)", "normalizeLastName (FR-8, FR-3)", "normalizeInput"; `unit/lookupOrder.test.ts` "AC-4: normalization variants succeed", "matches a mixed-case stored last name case-insensitively"; `integration/lookup.test.ts` describe "AC-4 / FR-8 / A-3 normalization in one submission" | none |
+| FR-9 No disclosure on unsuccessful attempts | `unit/failureResultShape.test.ts` describe "failure result shape (AC-5 / FR-9)"; `integration/dataProtection.test.ts` describe "data protection (AC-5 / FR-9)" (indistinguishable failures, no fixture values, no-store, logs, headers, query string, error handler, A-1 oracle scope); `integration/fixtureExposure.test.ts` describe "fixture exposure (AC-5 / FR-9)"; `unit/logger.test.ts`; `unit/toTrackingView.test.ts` "does not leak the customer last name anywhere in the serialized view" | Declared limitation (A-1): when the last name is omitted, an existing order number succeeds, so order existence is disclosed to a caller who supplies only the order number. The test "AC-5 / FR-9 / A-1: scope of the existence oracle ..." documents this scope; it does not remove it. |
+| FR-10 Malformed order number: format error, no lookup | `unit/lookupOrder.test.ts` "FR-10: makes zero repository calls for MissingInput and FormatError"; `integration/lookup.test.ts` describe "A-4 / FR-10 malformed order number"; `e2e/lookup.spec.ts` "format error shows format message" | none |
+| AC-1 Successful lookup | `integration/lookup.test.ts` describe "AC-1 / FR-2 / FR-3 / FR-4 / FR-5 successful lookup", "AC-1 / A-1 returns the tracking view without a last name ..."; `integration/routes.test.ts` "POST valid order returns the tracking view without the last name"; `e2e/lookup.spec.ts` "happy path shows tracking view" | none |
+| AC-2 No match | `integration/lookup.test.ts` describe "AC-2 / FR-6 unknown order"; `integration/routes.test.ts` "POST unknown order returns the generic message with status 200"; `e2e/lookup.spec.ts` "not found shows generic message in error summary" | none |
+| AC-3 Missing required info | `integration/lookup.test.ts` describe "AC-3 / FR-7 missing order number"; `e2e/lookup.spec.ts` "missing order number shows required message" | none |
+| AC-4 Formatting differences handled | `integration/lookup.test.ts` describe "AC-4 / FR-8 / A-3 normalization in one submission" (per-variant tests plus "AC-4 hyphenated last name matches regardless of case"); `unit/lookupOrder.test.ts` "AC-4: normalization variants succeed"; `unit/normalize.test.ts` | none |
+| AC-5 Data protection | Same evidence as FR-9; plus `integration/app.test.ts` "sets helmet headers including CSP, HSTS and Referrer-Policy no-referrer", "returns a generic error page with no stack trace on internal error"; `integration/throttle.test.ts` (optional per-IP throttling, generic response) | Same A-1 limitation as FR-9. No penetration or real-network test; mock data only. |
+| NFR-1 p95 under 2 s | `performance/p95.test.ts` describe "NFR-1 / A-2 performance smoke: POST /track p95 under 2 s" (run via `npm run test:perf`; last recorded p95 2.15 ms over 250 requests) | Smoke test, in-process against mock data, sequential requests only. Not a load test; not run by `npm test`. |
+| NFR-2 Latest two versions of Chrome, Edge, Firefox, Safari; responsive | `e2e/lookup.spec.ts` and `e2e/a11y.spec.ts` run on Playwright projects chromium, firefox, webkit, mobile-chrome, mobile-safari; `e2e/a11y.spec.ts` "320px reflow without horizontal scroll", "touch targets at least 44px" | Partial; remainder rests on limitations. Edge is not a Playwright project; "latest two major versions" is not verified (bundled Playwright browser versions are used); real-device Safari and the manual checklist (`e2e/manual-checklist.md`) were not performed; keyboard-only test is skipped on mobile-chrome, mobile-safari, webkit. IMP-012 was accepted with known limitations. |
+| NFR-3 WCAG 2.1 AA | `integration/lookup.test.ts` describe "NFR-3 markup assertions" (3 tests); `e2e/a11y.spec.ts` axe scans "form", "missing field error state", "format error state", "not found error state", "result page", plus "touch targets at least 44px", "focus indicator is visible on form controls"; `e2e/lookup.spec.ts` "focus moves to error summary on re-render", "keyboard-only operation" | Partial. Axe does not cover all WCAG 2.1 AA criteria. Manual items not performed: screen reader check, 200% zoom, focus order review (`e2e/manual-checklist.md`). |
+| A-1 Last name optional | `integration/lookup.test.ts` describe "A-1 optional last name" (4 tests), "AC-1 / A-1 returns the tracking view without a last name ..."; `unit/lookupOrder.test.ts` "succeeds without last name (order-number-only, A-1)"; `integration/dataProtection.test.ts` "AC-5 / FR-9 / A-1: scope of the existence oracle ..." | Behavior is tested. The disclosure consequence is the FR-9 limitation. |
+| A-2 Performance target (2 s p95, mock data) | `performance/p95.test.ts` (same as NFR-1) | Same limitations as NFR-1. The browser and WCAG parts of A-2 are traced under NFR-2 and NFR-3. |
+| A-3 Normalization rules | `unit/normalize.test.ts` describe "normalizeOrderNumber (FR-8, A-3, AC-4)"; `integration/lookup.test.ts` describe "AC-4 / FR-8 / A-3 normalization in one submission" | none |
+| A-4 Malformed order number gets format error, no lookup | `unit/validate.test.ts` "message constants are static and never echo input (A-4)", "format error result carries no submitted value"; `integration/lookup.test.ts` describe "A-4 / FR-10 malformed order number" (3 tests); `unit/failureResultShape.test.ts` "AC-5 / FR-9: format error result carries no submitted value" | none |
+
+#### Traceability summary
+- Total items: 22 (FR-1..FR-10, AC-1..AC-5, NFR-1..NFR-3, A-1..A-4).
+- Covered by automated tests with no caveat: 15 (FR-1, FR-2, FR-3, FR-5, FR-6, FR-7, FR-8, FR-10, AC-1, AC-2, AC-3, AC-4, A-1, A-3, A-4).
+- Automated tests exist but a declared limitation applies: 4 (FR-9 and AC-5: A-1 existence-oracle scope; NFR-1 and A-2: smoke test on mock data, not a load test).
+- Partially covered; unmet portion is limitation-only (not automated): 2 (NFR-2 and NFR-3: Edge, latest-two-versions, real-device Safari, 200% zoom, screen reader, focus-order checks not performed; three keyboard-only skips).
+- No direct automated test: 1 (FR-4 no authentication; only implicit evidence, not mapped to an unrelated test).
+- Not verified at the task level: the clean `npm ci` (human has not approved running it). (Superseded: see "Clean install and full verification" below.)
+
+### Clean install and full verification
+
+Task Status: IMPLEMENTED — PENDING HUMAN ACCEPTANCE. Not accepted, not DONE. This entry supersedes the earlier "clean npm ci not run" statements for IMP-014.
+
+Human approval of the clean install: the human approved the clean `npm ci` with the word "yes", in reply to the question "may I run it?". This approval was relayed to me in the delegation message; I did not receive it directly from the human.
+
+Scope: no file under `src/`, `tests/`, or any config file was changed; README and the traceability text were not changed. No `npm install`, `npm audit`, `npm audit fix`, `npx playwright install`, or dependency upgrade was run. Each command was run directly from `order-tracking/` with no pipe; output was redirected to files in the OS temp directory and the summaries below were read from those files. Steps run in order; no step failed.
+
+| Step | Command | Exit code | Summary |
+| --- | --- | --- | --- |
+| 1 | `rm -rf node_modules` | 0 | node_modules removed |
+| 2 | `npm ci` | 0 | added 168 packages, audited 169 packages in 5s; 6 vulnerabilities (3 moderate, 1 high, 2 critical) reported; no audit command run |
+| 3 | `npm run typecheck` | 0 | `tsc -p tsconfig.json --noEmit`, no errors |
+| 4 | `npm run build` | 0 | `tsc -p tsconfig.json`, no errors |
+| 5 | `npm test` | 0 | Test Files 14 passed (14); Tests 119 passed (119) |
+| 6 | `npm run test:perf` | 0 | Test Files 1 passed (1); Tests 1 passed (1); `PERF-SMOKE n=250 p50=2.37ms p95=3.62ms max=6.48ms limit=2000ms statuses={"200":250}` |
+| 7 | `npm run test:e2e` | 0 | 70 tests: 67 passed, 3 skipped, 0 failed (34.7s) |
+
+Lockfile: `npm ci` uses the lockfile as written and fails on a mismatch with package.json; it exited 0. `git status --short` run after `npm ci` and again after all steps did not list `package-lock.json`, so the lockfile is unchanged relative to the working tree state before the run. (The only package-related entry is the pre-existing ` M package.json`, which was already modified in the git status at the start of this run.) A `git diff --stat` on the lockfile was blocked by a deny rule and was not obtained; the conclusion rests on `git status`.
+
+E2E per-project counts (14 tests each, read from the redirected output file):
+- chromium: 14 passed, 0 skipped, 0 failed
+- firefox: 14 passed, 0 skipped, 0 failed
+- webkit: 13 passed, 1 skipped, 0 failed
+- mobile-chrome: 13 passed, 1 skipped, 0 failed
+- mobile-safari: 13 passed, 1 skipped, 0 failed
+
+The 3 skips are the keyboard-only operation tests (lookup.spec.ts:47) on webkit, mobile-chrome, and mobile-safari; they are pre-existing skip conditions.
+
+Git status after the runs: the same set of modified and untracked paths as at the start of the run (plus this log and impl-plan.md, already modified earlier); generated output (`node_modules/`, `dist/`, `test-results/`) did not appear.
+
+Evidence connection: this task step changed no product files; it provides verification evidence only. The only files changed in this step are this log and the IMP-014 status lines in impl-plan.md.
+
+Limitations carried (not hidden):
+- The e2e TLS proxy depends on the `openssl` CLI; its availability on CI images is unchecked.
+- e2e runs only over HTTPS through the proxy; plain-http serving is not exercised by e2e.
+- The 200% zoom check, the screen-reader check, the focus-order check, and the manual checklist (`tests/e2e/manual-checklist.md`) were not performed.
+- Microsoft Edge and real-device Safari were not tested.
+- The IMP-001 npm audit findings remain open (`npm ci` again reports 6 vulnerabilities: 3 moderate, 1 high, 2 critical); no audit fix was run.
+
+### IMP-014 Human Acceptance
+
+- Acceptance: ACCEPTED
+- Decision made by: the human (not the implementation agent).
+- Human statement (verbatim): "I accept IMP-014."
+- Task Status: DONE — ACCEPTED (human decision). Earlier status "IMPLEMENTED — PENDING HUMAN ACCEPTANCE" and all earlier evidence above are retained unchanged.
+- Accepted with these known limitations, carried over unchanged:
+  - The 6 dev-tooling npm audit vulnerabilities from IMP-001 remain open; no audit fix was run.
+  - The openssl CLI dependency for the e2e TLS proxy is unchecked in CI.
+  - The e2e suite runs only over HTTPS through the proxy.
+  - The 200% zoom, screen-reader and focus-order checks, and the manual checklist were not performed.
+  - Microsoft Edge and real-device Safari were not tested.
+  - The traceability shows FR-4 with no direct automated test, and NFR-2 and NFR-3 as partial.
+- This acceptance step changed no source, test, config, or README files, and ran no test, build, install, or audit command.
+- Dependency promotion: no BLOCKED tasks remain in impl-plan.md; IMP-001 to IMP-014 are all DONE. No tasks were promoted.
