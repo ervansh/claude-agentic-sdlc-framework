@@ -14,6 +14,7 @@ Framework-owned locations:
 - `.claude/skills/`
 - `.claude/commands/`
 - `.claude/hooks/`
+- `.claude/rules/`
 - `.claude/scripts/`
 - `.claude/settings.json`
 - `mcp/`
@@ -458,3 +459,12 @@ it for operational governance.
 - Hook = deterministic enforcement at tool and session events
 - MCP = external-system capability
 - Orchestrator = lifecycle coordinator, not a replacement for specialist subagents
+
+## Rules
+
+Project rules live in `.claude/rules/` and apply to every run:
+
+- `code-quality.md`: correctness, error handling, tests, clarity, duplication, dependencies, scope
+- `git.md`: story branches, commit approval, forbidden operations, pushes and pull requests
+- `secrets.md`: no exposure of credentials, files that must stay out of Git, redaction, suspected leaks
+- `workflow-state.md`: artifact-based state, status values, gates, resume, transitions
