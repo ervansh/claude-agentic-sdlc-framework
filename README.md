@@ -481,6 +481,7 @@ Confluence updates need explicit approval of the page title, space, and content.
 ├── .env.example                       # Template (copy to .env, never commit .env)
 ├── .mcp.json                          # Project MCP server registration
 ├── .claude/
+│   ├── rules/                         # 4 project rules (code quality, git, secrets, workflow state)
 │   ├── agents/                        # 11 subagents (WHO)
 │   ├── skills/                        # 9 skills (HOW)
 │   ├── commands/                      # 10 slash commands (WHAT NOW)
