@@ -268,15 +268,11 @@ Only the owning specialist may create or update its authoritative artifact:
 
 A lifecycle stage is not considered correctly completed when the orchestrator directly performs the specialist work.
 
-## Subagent Constraint
+## Delegation Model
 
-Claude Code specialist subagents cannot spawn subagents.
-
-Therefore:
-
-- the SDLC orchestrator runs in the main session through the `/sdlc-orchestrate` command and invokes specialist subagents
-- specialists must not invoke other specialists
-- a specialist that needs another stage's output reports the dependency and stops
+- The SDLC orchestrator is the `sdlc-orchestration` skill. `/sdlc-orchestrate` runs it in the main session, and it delegates each stage with the Agent tool.
+- Specialists must not invoke other specialists. A specialist that needs another stage's output reports the dependency and stops.
+- Nested subagent behavior depends on the Claude Code version. The framework's rules do not depend on nesting.
 
 ## Independent Review
 
@@ -375,8 +371,8 @@ Before stage transition, verify the artifact exists at the canonical path and th
 
 ## SDLC Orchestration
 
-The repository provides `.claude/agents/sdlc-orchestrator.md` and the
-`/sdlc-orchestrate` command.
+The repository provides the `sdlc-orchestration` skill and the
+`/sdlc-orchestrate` command that applies it.
 
 The orchestrator may:
 
@@ -453,12 +449,12 @@ it for operational governance.
 ## Convention Summary
 
 - CLAUDE.md = ALWAYS-on repository rules
-- Subagent = WHO performs a role
-- Skill = HOW reusable work is performed
-- Command = WHAT NOW (slash command, for example `/sdlc-requirements`)
+- Subagent = WHO performs a role. Frontmatter lists its tools, model, and preloaded `skills`.
+- Skill = HOW the work is done. Holds the procedure, output templates, and reference material.
+- Command = WHAT NOW. A short slash command that launches a subagent or applies a skill.
 - Hook = deterministic enforcement at tool and session events
 - MCP = external-system capability
-- Orchestrator = lifecycle coordinator, not a replacement for specialist subagents
+- Orchestrator = `sdlc-orchestration` skill, the lifecycle coordinator. It does not replace specialist subagents.
 
 ## Rules
 

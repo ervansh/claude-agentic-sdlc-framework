@@ -1,139 +1,52 @@
 ---
 name: user-story-documentation
-description: Publishes finalized story documentation to Confluence as a human-readable record after the SDLC is complete.
+description: Procedure for publishing a finished story's repository artifacts to a Confluence page tree, idempotently and with one bounded authorization. Use when the human asks to publish story documentation.
 ---
 
-# User Story Documentation Publishing
-
-## Purpose
-
-Publish finalized story documentation to Confluence as a human-readable record after the SDLC is complete.
-
-This skill is deliberately outside the SDLC lifecycle. It does not approve or advance lifecycle state.
+# User Story Documentation
 
 ## Inputs
 
-Required:
-- Application
-- Application Root
-- Story ID / Source Reference
-- Confluence Space Key or unambiguous Space Name
+Application, Application Root, Story ID, SDLC Artifact Directory (for managed stories), Confluence space key or unambiguous space name. Optional: story summary, parent page, subset of documents.
 
-Optional:
-- Story summary
-- parent page title/id
-- subset of document types to publish
+## Sources
 
-## Canonical Source
+Final artifacts in `<SDLC Artifact Directory>`, or `<application-root>/docs/sdlc/` when unmanaged. Use the artifacts that exist. Publish only the child pages that have a source.
 
-For a session-managed story, repository artifacts under the supplied
-`SDLC Artifact Directory` are authoritative. Otherwise use:
+## Page tree
 
-`<application-root>/docs/sdlc/`
+- Root: `<STORY-ID> - <Story Summary>`
+- `01 - Story & Requirements`: story ID, provenance, objective, clarifications, scope, FR, NFR, AC, approval evidence
+- `02 - HLD`: context, drivers, components, technology, integrations, data flow, security and privacy boundaries, deployment, high-level ADRs
+- `03 - LLD`: modules, interfaces, data models, validation, flows, state transitions, error handling, persistence, test seams
+- `04 - Design Review`: scope, outcome, findings, required corrections, gate result. Never describe it as human Architecture Approval.
+- `05 - Implementation Summary`: task list with final statuses, delivered files, key decisions, test and build evidence. No raw command logs.
+- `06 - Code Review`: scope, findings, outcome, gate decision
+- `07 - Verification Report`: scope, FR, NFR, AC coverage, categories run, result, observations
+- `08 - Release / PR Summary`: change summary, test evidence, limitations, reviewer checklist, and PR link only when a remote PR is verified
 
-are authoritative.
+If only `architecture.md` exists, derive `02 - HLD` and `03 - LLD` from it. State that both come from the same approved artifact. Add no decisions.
 
-Confluence must never become the source of truth for SDLC status.
+## Procedure
 
-## Preconditions
+1. Confirm authorization. One explicit human approval covers the bounded set: the story root, its expected children, and updates needed to match the artifacts. Ask for it once, before the first write, unless the request already states it.
+2. For each intended page, find the story root by exact Story ID in the target space (`confluence_search`). Check its children. Never rely on title alone.
+3. Update matching pages with `confluence_upsert_page`. Create only missing pages. Never create copies such as `ORD-3 final` or `HLD v2`. Use page history for revisions.
+4. Verify: retrieve the root and its children (`confluence_get_page`). Check that each expected page exists once, with the right parent and title. Spot-check status wording against the artifacts.
 
-The publishing request should normally occur after:
-- implementation tasks are completed/accepted
-- code review is complete
-- final verification is complete
+## Publication report
 
-If the story is not complete, do not infer completion. Publish only when the user explicitly requests publication of the available state, and label it accurately.
+```text
+Publication Status: COMPLETE | PARTIAL | BLOCKED
+Application:
+Story:
+Confluence Space:
+Story Root:
+Created Pages:
+Updated Pages:
+Skipped Pages (no source):
+Blocked Items:
+Verification:
+```
 
-## Page Tree
-
-Use a single story root:
-
-`<STORY-ID> - <Story Summary>`
-
-Children:
-
-- `01 - Story & Requirements`
-- `02 - HLD`
-- `03 - LLD`
-- `04 - Design Review`
-- `05 - Implementation Summary`
-- `06 - Code Review`
-- `07 - Verification Report`
-- `08 - Release / PR Summary`
-
-Only create child pages backed by actual source artifacts.
-
-## HLD/LLD Compatibility Mode
-
-If the framework still has only `architecture.md`, derive two documentation views from it:
-
-HLD:
-- context
-- drivers
-- major boundaries
-- technology stack
-- external integrations
-- high-level data flow
-- deployment
-- security/privacy boundaries
-- major tradeoffs/ADRs
-
-LLD:
-- detailed components/modules
-- contracts/interfaces
-- detailed data model
-- normalization/validation
-- request/response or sequence flow
-- state transitions
-- error handling
-- persistence
-- testability details
-
-Do not invent design content during this transformation.
-
-## Idempotent Upsert Algorithm
-
-For each intended page:
-
-1. search in the target space using the exact Story ID and title
-   (mcp__sdlc-integrations__confluence_search)
-2. prefer a page already beneath the intended story root
-3. retrieve it (mcp__sdlc-integrations__confluence_get_page) and verify identity
-4. update if it exists (mcp__sdlc-integrations__confluence_upsert_page)
-5. create if it does not exist (mcp__sdlc-integrations__confluence_upsert_page)
-6. retrieve again to verify (mcp__sdlc-integrations__confluence_get_page)
-
-Never rely on title search alone when multiple spaces may contain the same title.
-
-## External Write Authorization
-
-One explicit authorization may cover the full bounded story documentation package.
-
-If authorization is not explicit in the current request, stop before the first create/update operation and ask for it.
-
-Do not request approval separately for every page.
-
-## Failure Handling
-
-Return `BLOCKED` when:
-- sdlc-integrations MCP server confluence_* tools are unavailable
-- credentials do not permit page access/write
-- target space cannot be identified safely
-- more than one plausible story root exists and identity cannot be resolved
-- required source artifacts cannot be read
-
-Never bypass MCP by reading credentials and calling REST directly.
-
-## Publication Report
-
-Return:
-
-- Publication Status
-- Story Root
-- pages created
-- pages updated
-- pages skipped because no source exists
-- verification result
-- any permission/access blockers
-
-This report is documentation evidence only, not SDLC state.
+This report is documentation evidence only. It is not SDLC state.

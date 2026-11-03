@@ -66,7 +66,7 @@ prohibited actions, and the stopping condition.
 
 Rules:
 
-- Subagents cannot spawn subagents. Specialists must not invoke other specialists.
+- Specialists must not invoke other specialists. The orchestrator is a skill that runs in the main session.
 - Restrict `tools` to what the role needs. Tool restriction supports role separation
   but does not replace behavioral rules in the body.
 - Creation and review roles are separate subagents (for example

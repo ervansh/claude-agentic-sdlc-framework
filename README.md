@@ -482,9 +482,9 @@ Confluence updates need explicit approval of the page title, space, and content.
 ├── .mcp.json                          # Project MCP server registration
 ├── .claude/
 │   ├── rules/                         # 4 project rules (code quality, git, secrets, workflow state)
-│   ├── agents/                        # 11 subagents (WHO)
-│   ├── skills/                        # 9 skills (HOW)
-│   ├── commands/                      # 10 slash commands (WHAT NOW)
+│   ├── agents/                        # 10 subagents (WHO), each preloads one skill
+│   ├── skills/                        # 11 skills (HOW), including sdlc-orchestration
+│   ├── commands/                      # 10 slash commands (WHAT NOW), short triggers
 │   ├── hooks/                         # Python hook handlers
 │   ├── scripts/story_sessions.py      # Story branch helper
 │   └── settings.json                  # Hooks and read-deny rules

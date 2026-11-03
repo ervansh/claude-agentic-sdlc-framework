@@ -1,24 +1,38 @@
 ---
 name: final-verification
-description: Independent final-verification methodology that verifies all approved FRs, NFRs, and ACs for the active application.
+description: Procedure for verifying every approved FR, NFR, and AC with real evidence and producing verification.md. Use when running final verification for a completed story.
 ---
 
-# Final Verification Skill
+# Final Verification
 
-Use the active application's authoritative artifacts and current implementation.
+Read: lifecycle artifacts in `<SDLC Artifact Directory>`, plus the application's current source and tests.
+Write: `<SDLC Artifact Directory>/verification.md`
 
-Verify every FR/NFR/AC as PASS, FAIL, or NOT VERIFIED.
+## Procedure
 
-Execute appropriate tests/checks and record real evidence.
+1. Build a table of every FR, NFR, and AC from `requirements.md`.
+2. Verify each item individually as `PASS`, `FAIL`, or `NOT VERIFIED`. Record the test name, command, or observation that supports it.
+3. Also verify where they apply:
+   - domain invariants and error paths
+   - state and persistence
+   - integrations
+   - browser and user workflows
+   - accessibility and responsiveness
+   - performance
+   - dependency status
+   - documentation consistency
+4. Run the checks and record exact commands, exit codes, and results.
+5. Record observations and limitations.
+6. Choose one outcome: `PASS`, `PASS WITH OBSERVATIONS`, or `FAIL`.
+7. State whether Pull Request Preparation is `ALLOWED` or `BLOCKED`.
 
-Write only:
+## Output header
 
-`<SDLC Artifact Directory>/verification.md`
-
-Final outcome:
-
-- PASS
-- PASS WITH OBSERVATIONS
-- FAIL
-
-Do not modify production code or tests.
+```text
+Current Stage: Final Verification
+Application: <application>
+Application Root: <application-root>
+Target Artifact: <SDLC Artifact Directory>/verification.md
+Final Verification Outcome: <PASS | PASS WITH OBSERVATIONS | FAIL>
+Pull Request Preparation: <ALLOWED | BLOCKED>
+```
