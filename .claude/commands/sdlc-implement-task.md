@@ -8,5 +8,3 @@ Launch the `implementation-engineer` subagent with this task.
 Context: $ARGUMENTS
 
 Required: Application, Application Root, SDLC Artifact Directory, Task ID (`IMP-###`).
-
-If a required value is missing or still a placeholder, ask for it and stop.

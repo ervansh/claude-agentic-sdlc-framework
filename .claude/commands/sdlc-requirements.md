@@ -9,5 +9,3 @@ Context: $ARGUMENTS
 
 Required: Application, Application Root, SDLC Artifact Directory, Source Type (JIRA | CONFLUENCE | WORD), Source Reference.
 Output: `<SDLC Artifact Directory>/requirements.md`
-
-If a required value is missing, ask for it and stop.

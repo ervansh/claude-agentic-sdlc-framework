@@ -13,13 +13,8 @@ Establish: Application, Application Root, Run Mode (`START` | `RESUME`), Source 
 
 ## Invariants
 
-- One story session is one branch `story/<STORY-ID>` in the current checkout. Do not use worktrees.
-- The helper creates the branch from the default branch (`origin/HEAD`, else `main`, else `master`) and refuses to switch when the working tree has uncommitted changes. Never stash, reset, discard, delete, merge, or push on the human's behalf.
+- The helper creates the branch from the default branch (`origin/HEAD`, else `main`, else `master`) and refuses to switch when the working tree has uncommitted changes (see `git.md`).
 - For `START` with a new application, the Application Root may not exist yet. Requirements Analysis may create the SDLC Artifact Directory. Implementation may create source and test directories per the approved architecture and plan.
-- For `RESUME`, determine lifecycle state only from the selected SDLC Artifact Directory. Ignore other stories' artifacts and other applications' artifacts.
-- Specialists never invoke other specialists.
-- Architecture and Design Review, Implementation and Code Review, and Implementation and Final Verification each run in separate specialist contexts.
-- Authoritative files are written to their canonical path. Before a stage transition, confirm the artifact exists there and that no competing copy was created under `docs/`.
 
 ## Story sessions
 
@@ -51,7 +46,7 @@ Story ID: <id>            (managed runs only)
 |---|---|---|
 | Requirements | `requirements-analyst` | new run, or requirements not `APPROVED` |
 | Architecture | `solution-architect` | requirements `APPROVED` |
-| Design Review | `design-reviewer` | architecture draft exists. Run in a separate context. |
+| Design Review | `design-reviewer` | architecture draft exists. |
 | Implementation Planning | `implementation-planner` | architecture approved, design review permits |
 | Implementation | `implementation-engineer` | plan `APPROVED`. One dependency-ready `READY` task at a time. |
 | Code Review | `code-reviewer` | all approved tasks `DONE` |
@@ -74,18 +69,15 @@ Ask the human, and wait, at each of these:
 - task acceptance, one task at a time
 - pull request review
 
-Record each approval by delegating the exact approval statement back to the owning specialist. Only an explicit approval statement passes a gate. "ok", "continue", "next", or "looks good" do not.
+Record each approval by delegating the exact approval statement back to the owning specialist.
 
 ## Rework
 
 - Route review findings to the owning stage. Do not fix them yourself.
 - After three correction cycles without an approval-ready result, stop for human attention.
-- If a downstream stage finds a changed requirement, return to Requirements Analysis.
-
+- 
 ## Rules
 
-- Never edit repository files, call Jira or Confluence directly, read credentials, implement code, or review your own output.
-- Never merge a pull request.
 - Never invoke `user-story-documenter` automatically. After the terminal handoff, you may tell the human that publication is available.
 
 ## Reporting

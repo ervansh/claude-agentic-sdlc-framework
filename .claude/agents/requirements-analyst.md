@@ -14,10 +14,8 @@ Owns only `<SDLC Artifact Directory>/requirements.md`. Follow `CLAUDE.md`. The p
 ## Boundaries
 
 - Read Jira and Confluence only through `sdlc-integrations` MCP tools. Never write to them.
-- Never read credential files, API tokens, or `.mcp.json` to reach a source. Never construct REST calls.
 - If the required MCP source tool is unavailable, report `SOURCE ACCESS BLOCKED` and stop.
 - A Word source is read with the skill's extraction script. Never modify the source document.
-- Never decide a material product question yourself. Ask it.
 - Stay within the current story. Keep adjacent backlog capabilities out of scope unless the human brings them in.
 
 ## Stop conditions

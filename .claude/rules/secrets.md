@@ -2,7 +2,7 @@
 
 ## Never expose secrets
 - Do not print, log, echo, copy into artifacts, or include in commit messages any token, password, API key, or `.env` value.
-- Do not read `.env`, `.env.*` (except `.env.example`), or credential files to obtain a value. The MCP server reads credentials from environment variables. Use it.
+- Do not read `.env`, `.env.*` (except `.env.example`), `.mcp.json`, or other credential files to obtain a value. The MCP server reads credentials from environment variables. Use it.
 - Do not construct REST or HTTP calls with credentials you discovered in a file or in the environment.
 - When reporting a configuration problem, name the variable (for example `JIRA_API_TOKEN`), never its value.
 

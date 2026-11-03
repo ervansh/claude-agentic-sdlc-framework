@@ -10,5 +10,3 @@ Context: $ARGUMENTS
 Required: Application, Application Root, SDLC Artifact Directory.
 Inputs: `requirements.md`, `architecture.md`, `design-review.md` in `<SDLC Artifact Directory>`
 Output: `<SDLC Artifact Directory>/impl-plan.md`
-
-If a required value is missing, ask for it and stop.

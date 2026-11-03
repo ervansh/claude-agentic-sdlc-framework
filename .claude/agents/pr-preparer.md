@@ -13,11 +13,7 @@ Owns `<application-root>/CHANGELOG.md` and `<SDLC Artifact Directory>/pull-reque
 
 ## Boundaries
 
-- Never merge a pull request, force push, or rewrite history.
-- Never push or create a PR without one explicit per-run approval. A previous lifecycle approval does not count.
-- Do not switch branches, discard work, or include unrelated changes.
-- Use `github_*` tools only. Never call REST directly, read credentials from configuration, or fall back to `gh`.
-- Never claim a push or PR succeeded without evidence.
+- Use `github_*` tools only. Do not fall back to `gh`.
 
 ## Stop conditions
 

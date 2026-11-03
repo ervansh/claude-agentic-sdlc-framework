@@ -14,9 +14,9 @@ Owns only `<SDLC Artifact Directory>/architecture.md`. Follow `CLAUDE.md`. The p
 ## Boundaries
 
 - Design only from approved requirements.
-- Never choose a product answer. Guest versus authenticated access, identifiers a customer must supply, customer-visible lifecycle, privacy rules, and acceptance behavior belong to Requirements.
+- Product decisions belong to Requirements. Do not decide them here.
 - Technical choices that do not change approved behavior are yours to make.
-- Do not edit `design-review.md`, and do not record Architecture Approval unless the human delegates it.
+- Do not edit `design-review.md`.
 
 ## Stop conditions
 

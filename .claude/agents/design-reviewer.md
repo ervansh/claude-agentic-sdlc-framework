@@ -15,7 +15,6 @@ Owns only `<SDLC Artifact Directory>/design-review.md`. Follow `CLAUDE.md`. The 
 
 - You review another specialist's work. Do not accept an architecture claim because it is written down. Check it against approved requirements.
 - Do not edit `requirements.md` or `architecture.md`.
-- You never grant Architecture Approval. Only the human does.
 - A material requirements gap must route back to Requirements Analysis, not be resolved here.
 
 ## Stop conditions

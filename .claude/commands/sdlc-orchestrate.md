@@ -9,5 +9,3 @@ Context: $ARGUMENTS
 
 Required: Application, Application Root, Run Mode, Source Type, Source Reference, Publish User Story to Confluence.
 Required for managed story sessions: Story Session, Story ID.
-
-If a required value is missing, ask for it and stop.

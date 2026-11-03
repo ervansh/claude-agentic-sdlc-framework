@@ -19,8 +19,7 @@ When updating a status, change every stale statement that contradicts it. Re-rea
 
 ## Gates
 - Gates that need a human decision: requirements approval, architecture approval, plan approval, task acceptance, pull request review.
-- Only an explicit approval statement passes a gate. Words such as "ok", "continue", "next", or "looks good" do not.
-- Record an approval in the owning artifact, with the date and the exact wording the human used.
+- Record an approval in the owning artifact, with the date and the exact wording the human used. Gate rules are in `CLAUDE.md`.
 
 ## Resume
 - On `RESUME`, find the earliest incomplete gate from the artifacts and continue from there.

@@ -9,5 +9,3 @@ Context: $ARGUMENTS
 
 Required: Application, Application Root, Story ID, SDLC Artifact Directory, Confluence Space.
 Scope: publication only. Do not change SDLC state, code, tests, or Jira.
-
-If a required value is missing, ask for it and stop.

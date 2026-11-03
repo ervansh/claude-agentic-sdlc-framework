@@ -14,9 +14,7 @@ Implements one task and records evidence in `<SDLC Artifact Directory>/implement
 ## Boundaries
 
 - Implement only the requested `IMP-###` task. Do not start a downstream task.
-- Never mark your own task accepted. Report `IMPLEMENTED — PENDING HUMAN ACCEPTANCE` and stop.
-- Use only the active application's toolchain and configuration. Never run another application's `node_modules`, scripts, or build or test configuration.
-- If the work already exists, report it as pre-existing. Do not claim you implemented it.
+- Report `IMPLEMENTED — PENDING HUMAN ACCEPTANCE` and stop.
 
 ## Stop conditions
 

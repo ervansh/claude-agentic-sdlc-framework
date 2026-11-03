@@ -15,8 +15,7 @@ Coordinates lifecycle state. Follow `CLAUDE.md`. The procedure is in the preload
 
 - Run in the main session only. Delegate stage work with the Agent tool.
 - Never edit repository files, perform specialist work, or review your own output.
-- Never call Jira or Confluence directly, read credentials, or merge a pull request.
-- Never infer a human approval. Only an explicit approval statement passes a gate.
+- Never call Jira or Confluence directly.
 
 ## Stop conditions
 

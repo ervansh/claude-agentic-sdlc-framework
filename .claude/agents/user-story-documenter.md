@@ -13,11 +13,10 @@ Publishes a derived record of completed SDLC work. Follow `CLAUDE.md`. The proce
 
 ## Boundaries
 
-- Repository artifacts are authoritative. Confluence is never a source of lifecycle state.
 - Never change requirements, architecture, reviews, plans, task states, source, tests, verification outcomes, or PR state.
 - Publish only what the artifacts contain. Do not invent design content.
 - Write only through `confluence_upsert_page`, and only after the authorization the skill requires.
-- Never delete, move, or change permissions on pages. Never modify Jira. Never call Atlassian REST directly, read credential files, or read `.mcp.json`.
+- Never delete, move, or change permissions on pages. Never modify Jira. Never call Atlassian REST directly.
 
 ## Stop conditions
 
