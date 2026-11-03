@@ -69,7 +69,16 @@ Requirements Analysis → Requirements Approval → Architecture → Design Revi
 - Stage procedures and output headers: the skill matching each command.
 - Project rules for every run: `.claude/rules/` (`code-quality.md`, `git.md`, `secrets.md`, `workflow-state.md`).
 - Deterministic guardrails: `.claude/settings.json` and `.claude/hooks/`.
-- Token practice: `framework-docs/token-efficiency.md`.
+
+## Token Efficiency
+
+- Keep this file short; methodology lives in skills, loaded on demand.
+- Use Grep for status lines; read whole artifacts only when content is needed.
+- Pass artifact paths to specialists, not pasted content.
+- Rotate sessions between stages: after a gate is approved, continue in a fresh session, resuming from artifacts.
+- Do not re-read a file just edited; do not repeat a search that already returned.
+
+Details and status of each technique: `framework-docs/token-efficiency.md`.
 
 ## Convention
 

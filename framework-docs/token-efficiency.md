@@ -8,7 +8,7 @@ Each technique below states whether it is **Applied** in this framework or
 | 1 | Keep `CLAUDE.md` short | It loads on every turn. Methodology lives in skills, which load on demand. | Applied (short Token Efficiency section; keep it brief) |
 | 2 | Model tiers per subagent | Routine publishing and doc sync use `haiku`. Judgment roles use `sonnet`. The orchestrator inherits. | Applied (`model:` in each agent) |
 | 3 | Deny reads of secrets and generated folders | Stops accidental loads of `.env`, `node_modules`, `dist`, `coverage`, `.git`, and lockfiles. Also reduces secret exposure. | Applied (`permissions.deny` in `.claude/settings.json`) |
-| 4 | Status-only reads | The orchestrator Greps for `Status:` and `Approval:` lines instead of reading whole artifacts. | Applied (orchestrator agent) |
+| 4 | Status-only reads | The orchestrator Greps for `Status:`, `Result:`, `Outcome:`, and `Gate:` lines instead of reading whole artifacts. | Applied (`sdlc-orchestration` skill) |
 | 5 | Pass paths, not content | Specialists read artifacts themselves. The orchestrator never pastes artifact text into delegations. | Applied (orchestrator delegation rules) |
 | 6 | Rotate sessions between gates | Lifecycle state lives in artifacts and the story branch. A fresh session resumes from them and avoids carrying a long transcript. | Applied as guidance (`/sdlc-orchestrate` and CLAUDE.md); use `/clear` or a new session after each approved gate |
 | 7 | Compact helper output | `story_sessions.py` returns compact JSON and lists file names only. | Applied |
