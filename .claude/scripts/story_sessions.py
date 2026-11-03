@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Story sessions: one story branch per story, checked out in the current workspace.
 
 No worktrees are created. A story session is:

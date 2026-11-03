@@ -16,7 +16,7 @@ Application, Application Root, SDLC Artifact Directory, Source Type (`JIRA` | `C
 1. Retrieve the complete source:
    - Jira: `jira_get_issue` for an exact key. Use `jira_search` only to find a key.
    - Confluence: `confluence_get_page`, or `confluence_search` to find a page.
-   - Word: `python3 .claude/skills/requirements-analysis/scripts/extract-docx.py <file>`.
+   - Word: `python .claude/skills/requirements-analysis/scripts/extract-docx.py <file>`.
    Search metadata alone is not enough for gap analysis.
 2. Record provenance: source type, reference, retrieval time, and content hash when available.
 3. Extract explicit source facts. Classify each item `SOURCE`, `CONFIRMED`, `INFERRED`, `ASSUMED`, `UNRESOLVED`, or `CONFLICTING`.

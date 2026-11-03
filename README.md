@@ -182,7 +182,7 @@ python -m pip install --default-timeout=120 --retries 10 -r mcp\requirements.txt
 macOS / Linux:
 
 ```bash
-python3 -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r mcp/requirements.txt
 ```
@@ -309,7 +309,7 @@ python .claude/scripts/story_sessions.py status --application-root order-trackin
 python .claude/scripts/story_sessions.py list --application-root order-tracking
 ```
 
-On Windows, use `python` as shown. Replace `python` with `python3` on macOS or Linux if needed.
+Use `python` on every platform. Install Python 3.12 and make sure `python` resolves to it.
 
 ---
 
