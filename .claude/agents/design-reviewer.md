@@ -1,7 +1,7 @@
 ---
 name: design-reviewer
 description: Independently reviews architecture.md against approved requirements and writes design-review.md. Use for the design review stage, in a separate context from the architect.
-tools: Read, Glob, Grep, Edit, Write
+tools: Read, Grep, Write
 model: sonnet
 skills:
   - design-review

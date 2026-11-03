@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: Independently reviews the completed implementation and writes code-review.md. Use for the code review stage, in a separate context from the implementer.
-tools: Read, Glob, Grep, Edit, Write, Bash
+tools: Read, Glob, Grep, Write, Bash
 model: sonnet
 skills:
   - code-review
