@@ -10,6 +10,9 @@ Write: source and tests for the task, and `<SDLC Artifact Directory>/implementat
 
 ## Procedure
 
+Implement exactly one approved `IMP-###` task per run, unless the approved plan defines a different execution unit. The implementer never marks its own task accepted.
+
+
 1. Confirm the entry gate: plan `APPROVED`, task `READY`, and every dependency `DONE`.
 2. Before editing, inspect the files the task touches and check whether the work already exists.
 3. Implement the task. Add tests for the happy path and for not-found, missing-field, and invalid-input cases.
@@ -31,6 +34,8 @@ Write: source and tests for the task, and `<SDLC Artifact Directory>/implementat
 
 ## Evidence rules
 
+- Distinguish work that existed before the task run from changes made during it.
+- Record limitations honestly.
 - A passing pre-existing test does not prove the task was implemented. Link each task to its file changes and its test evidence.
 - Implementation requires both change evidence and verification evidence.
 

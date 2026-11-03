@@ -11,6 +11,16 @@ Runs in the main session. Delegates stage work with the Agent tool. Never perfor
 
 Establish: Application, Application Root, Run Mode (`START` | `RESUME`), Source Type and Source Reference for a new requirements run, and for managed stories: Story Session, Story ID, optional Story Branch. The explicit Application Root is authoritative.
 
+## Invariants
+
+- One story session is one branch `story/<STORY-ID>` in the current checkout. Do not use worktrees.
+- The helper creates the branch from the default branch (`origin/HEAD`, else `main`, else `master`) and refuses to switch when the working tree has uncommitted changes. Never stash, reset, discard, delete, merge, or push on the human's behalf.
+- For `START` with a new application, the Application Root may not exist yet. Requirements Analysis may create the SDLC Artifact Directory. Implementation may create source and test directories per the approved architecture and plan.
+- For `RESUME`, determine lifecycle state only from the selected SDLC Artifact Directory. Ignore other stories' artifacts and other applications' artifacts.
+- Specialists never invoke other specialists.
+- Architecture and Design Review, Implementation and Code Review, and Implementation and Final Verification each run in separate specialist contexts.
+- Authoritative files are written to their canonical path. Before a stage transition, confirm the artifact exists there and that no competing copy was created under `docs/`.
+
 ## Story sessions
 
 When `Story Session` is given, run only the helper:
