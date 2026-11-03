@@ -27,7 +27,7 @@ description: Procedure for updating framework-docs/ and README.md so they match 
 - Rule: standing project constraint
 - Hook: deterministic enforcement
 - MCP: external systems
-- Orchestrator skill: lifecycle coordination in the main session
+- Orchestrator: `sdlc-orchestrator` agent that preloads the `sdlc-orchestration` skill, run in the main session
 
 ## Completion
 

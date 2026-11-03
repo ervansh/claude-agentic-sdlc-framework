@@ -1,6 +1,6 @@
 ---
 description: Create dependency-ordered IMP tasks for an approved story and stop for plan approval.
-argument-hint: [Application] [Application Root] [Story ID] [SDLC Artifact Directory]
+argument-hint: "[Application] [Application Root] [Story ID] [SDLC Artifact Directory]"
 ---
 
 Launch the `implementation-planner` subagent with this task.

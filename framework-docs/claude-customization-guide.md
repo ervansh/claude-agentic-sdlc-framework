@@ -66,7 +66,7 @@ prohibited actions, and the stopping condition.
 
 Rules:
 
-- Specialists must not invoke other specialists. The orchestrator is a skill that runs in the main session.
+- Specialists must not invoke other specialists. The orchestrator (`sdlc-orchestrator` agent, preloading the `sdlc-orchestration` skill) runs in the main session.
 - Restrict `tools` to what the role needs. Tool restriction supports role separation
   but does not replace behavioral rules in the body.
 - Creation and review roles are separate subagents (for example
@@ -107,7 +107,7 @@ A command states WHAT should happen now: the application context, the inputs to
 read, the stage to run, and where to stop. Methodology stays in the skill; the
 role stays in the subagent.
 
-`/sdlc-orchestrate` runs in the main session because it invokes subagents.
+`/sdlc-orchestrate` applies the `sdlc-orchestration` skill in the main session, because it invokes subagents. `claude --agent sdlc-orchestrator` runs the same role.
 
 ## 5. Hooks (`.claude/settings.json` + `.claude/hooks/`)
 

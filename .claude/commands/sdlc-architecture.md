@@ -1,6 +1,6 @@
 ---
 description: Create architecture.md for an approved story from its requirements.
-argument-hint: [Application] [Application Root] [Story ID] [SDLC Artifact Directory]
+argument-hint: "[Application] [Application Root] [Story ID] [SDLC Artifact Directory]"
 ---
 
 Launch the `solution-architect` subagent with this task.

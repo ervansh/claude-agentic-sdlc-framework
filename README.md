@@ -236,6 +236,7 @@ Publish User Story to Confluence: NO
 ```
 
 The orchestrator runs in the main session and delegates each stage to a specialist.
+You can also start it as the main-session agent with `claude --agent sdlc-orchestrator`.
 It pauses at each gate and waits for your input.
 
 ### Option B: One stage at a time
@@ -482,7 +483,7 @@ Confluence updates need explicit approval of the page title, space, and content.
 ├── .mcp.json                          # Project MCP server registration
 ├── .claude/
 │   ├── rules/                         # 4 project rules (code quality, git, secrets, workflow state)
-│   ├── agents/                        # 10 subagents (WHO), each preloads one skill
+│   ├── agents/                        # 11 subagents (WHO), each preloads one skill, including sdlc-orchestrator
 │   ├── skills/                        # 11 skills (HOW), including sdlc-orchestration
 │   ├── commands/                      # 10 slash commands (WHAT NOW), short triggers
 │   ├── hooks/                         # Python hook handlers

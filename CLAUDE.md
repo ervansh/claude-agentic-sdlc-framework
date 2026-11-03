@@ -270,7 +270,7 @@ A lifecycle stage is not considered correctly completed when the orchestrator di
 
 ## Delegation Model
 
-- The SDLC orchestrator is the `sdlc-orchestration` skill. `/sdlc-orchestrate` runs it in the main session, and it delegates each stage with the Agent tool.
+- The SDLC orchestrator is the `sdlc-orchestrator` agent, which preloads the `sdlc-orchestration` skill. Run it in the main session with `claude --agent sdlc-orchestrator`, or with `/sdlc-orchestrate`, which applies the same skill. It delegates each stage with the Agent tool.
 - Specialists must not invoke other specialists. A specialist that needs another stage's output reports the dependency and stops.
 - Nested subagent behavior depends on the Claude Code version. The framework's rules do not depend on nesting.
 
@@ -371,8 +371,8 @@ Before stage transition, verify the artifact exists at the canonical path and th
 
 ## SDLC Orchestration
 
-The repository provides the `sdlc-orchestration` skill and the
-`/sdlc-orchestrate` command that applies it.
+The repository provides the `sdlc-orchestrator` agent, which preloads the
+`sdlc-orchestration` skill, and the `/sdlc-orchestrate` command that applies the same skill.
 
 The orchestrator may:
 
@@ -454,7 +454,7 @@ it for operational governance.
 - Command = WHAT NOW. A short slash command that launches a subagent or applies a skill.
 - Hook = deterministic enforcement at tool and session events
 - MCP = external-system capability
-- Orchestrator = `sdlc-orchestration` skill, the lifecycle coordinator. It does not replace specialist subagents.
+- Orchestrator = `sdlc-orchestrator` agent plus its `sdlc-orchestration` skill, the lifecycle coordinator. It does not replace specialist subagents.
 
 ## Rules
 

@@ -1,6 +1,6 @@
 ---
 description: Prepare the changelog and pull request for a verified story, with approval before any push or PR.
-argument-hint: [Application] [Application Root] [Story ID] [SDLC Artifact Directory]
+argument-hint: "[Application] [Application Root] [Story ID] [SDLC Artifact Directory]"
 ---
 
 Launch the `pr-preparer` subagent with this task.

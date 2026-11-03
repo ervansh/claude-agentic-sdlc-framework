@@ -1,6 +1,6 @@
 ---
 description: Turn a Jira, Confluence, or Word source into requirements.md, pausing for clarification and approval.
-argument-hint: [Application] [Application Root] [Story ID] [SDLC Artifact Directory] [Source Type] [Source Reference]
+argument-hint: "[Application] [Application Root] [Story ID] [SDLC Artifact Directory] [Source Type] [Source Reference]"
 ---
 
 Launch the `requirements-analyst` subagent with this task.

@@ -1,6 +1,6 @@
 ---
 description: Run an independent design review of the story's architecture against its requirements.
-argument-hint: [Application] [Application Root] [Story ID] [SDLC Artifact Directory]
+argument-hint: "[Application] [Application Root] [Story ID] [SDLC Artifact Directory]"
 ---
 
 Launch the `design-reviewer` subagent with this task.

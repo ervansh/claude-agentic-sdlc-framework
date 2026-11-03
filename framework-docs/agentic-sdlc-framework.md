@@ -90,7 +90,8 @@ The agent that creates an artifact must not approve its own work.
 - Verification Engineer independently verifies the final application.
 
 Creation and review run in separate subagent invocations. Specialists do not
-invoke each other. The orchestrator is a skill that runs in the main session.
+invoke each other. The orchestrator (`sdlc-orchestrator` agent, using the
+`sdlc-orchestration` skill) runs in the main session.
 
 ### 6. Artifact-Based State
 
@@ -151,7 +152,7 @@ Framework locations and application locations must not be mixed.
 | Command = WHAT NOW | Starts a specific workflow | `.claude/commands/` |
 | Hook = DETERMINISTIC | Enforcement at tool and session events | `.claude/settings.json`, `.claude/hooks/` |
 | MCP = EXTERNAL SYSTEMS | Jira, Confluence, GitHub access | `mcp/`, `.mcp.json` |
-| Orchestrator = COORDINATOR | Sequences stages, performs no specialist work | `/sdlc-orchestrate` + `sdlc-orchestration` skill |
+| Orchestrator = COORDINATOR | Sequences stages, performs no specialist work | `sdlc-orchestrator` agent + `sdlc-orchestration` skill, run via `/sdlc-orchestrate` or `claude --agent sdlc-orchestrator` |
 
 Skills should stay reusable across applications. Commands provide application
 context; they do not duplicate methodology.
@@ -160,7 +161,7 @@ context; they do not duplicate methodology.
 
 | Subagent | Output |
 | --- | --- |
-| sdlc-orchestration (skill, main session) | Lifecycle progression and delegation decisions |
+| sdlc-orchestrator (agent, main session) | Lifecycle progression and delegation decisions, using the `sdlc-orchestration` skill |
 | requirements-analyst | `requirements.md` |
 | user-story-documenter | Story-scoped Confluence documentation |
 | solution-architect | `architecture.md` |

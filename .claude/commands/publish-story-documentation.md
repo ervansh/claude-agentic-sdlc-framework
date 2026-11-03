@@ -1,6 +1,6 @@
 ---
 description: Publish the finished story's documentation to Confluence, updating existing pages.
-argument-hint: [Application] [Application Root] [Story ID] [SDLC Artifact Directory] [Confluence Space]
+argument-hint: "[Application] [Application Root] [Story ID] [SDLC Artifact Directory] [Confluence Space]"
 ---
 
 Launch the `user-story-documenter` subagent with this task.
