@@ -182,7 +182,7 @@ python -m pip install --default-timeout=120 --retries 10 -r mcp\requirements.txt
 macOS / Linux:
 
 ```bash
-python3 -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r mcp/requirements.txt
 ```
@@ -236,6 +236,7 @@ Publish User Story to Confluence: NO
 ```
 
 The orchestrator runs in the main session and delegates each stage to a specialist.
+You can also start it as the main-session agent with `claude --agent sdlc-orchestrator`.
 It pauses at each gate and waits for your input.
 
 ### Option B: One stage at a time
@@ -308,7 +309,7 @@ python .claude/scripts/story_sessions.py status --application-root order-trackin
 python .claude/scripts/story_sessions.py list --application-root order-tracking
 ```
 
-On Windows, use `python` as shown. Replace `python` with `python3` on macOS or Linux if needed.
+Use `python` on every platform. Install Python 3.12 and make sure `python` resolves to it.
 
 ---
 
@@ -482,9 +483,9 @@ Confluence updates need explicit approval of the page title, space, and content.
 ├── .mcp.json                          # Project MCP server registration
 ├── .claude/
 │   ├── rules/                         # 4 project rules (code quality, git, secrets, workflow state)
-│   ├── agents/                        # 11 subagents (WHO)
-│   ├── skills/                        # 9 skills (HOW)
-│   ├── commands/                      # 10 slash commands (WHAT NOW)
+│   ├── agents/                        # 11 subagents (WHO), each preloads one skill, including sdlc-orchestrator
+│   ├── skills/                        # 11 skills (HOW), including sdlc-orchestration
+│   ├── commands/                      # 10 slash commands (WHAT NOW), short triggers
 │   ├── hooks/                         # Python hook handlers
 │   ├── scripts/story_sessions.py      # Story branch helper
 │   └── settings.json                  # Hooks and read-deny rules

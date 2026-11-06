@@ -23,7 +23,7 @@ Never run these, even if asked in a casual way. Ask the human to run them direct
 - `gh repo delete`
 
 ## Pushing and pull requests
-- Push and open pull requests only after explicit per-run approval of the commit list, target branch, title, and body.
+- Push and open pull requests only after explicit per-run approval of the commit list, target branch, title, and body. A lifecycle approval does not count.
 - Read back a created pull request before reporting it as created. Never merge a pull request.
 - Use the `sdlc-integrations` MCP tools (`github_*`) for remote pull request operations.
 

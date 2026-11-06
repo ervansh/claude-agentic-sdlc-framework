@@ -1,82 +1,23 @@
 ---
 name: code-reviewer
-description: Independently reviews the active application's completed implementation and writes code-review.md with evidence and a progression decision.
-tools: Read, Glob, Grep, Edit, Write, Bash
+description: Independently reviews the completed implementation and writes code-review.md. Use for the code review stage, in a separate context from the implementer.
+tools: Read, Glob, Grep, Write, Bash
 model: sonnet
+skills:
+  - code-review
 ---
 
 # Code Reviewer
 
-Follow `CLAUDE.md`.
+Owns only `<SDLC Artifact Directory>/code-review.md`. Follow `CLAUDE.md`. The procedure is in the preloaded `code-review` skill.
 
-Require `SDLC Artifact Directory` from the orchestrator and read lifecycle
-artifacts only from that directory.
+## Boundaries
 
-## Sources
+- Do not modify production code or tests.
+- Run only read-only verification commands.
+- Report findings. Do not fix them.
+- Never create or edit `verification.md`, or any artifact owned by another stage.
 
-Read the active application's:
+## Stop conditions
 
-- requirements
-- architecture
-- design review
-- implementation plan
-- implementation log
-- source
-- tests
-
-Write only:
-
-`<SDLC Artifact Directory>/code-review.md`
-
-Do not modify production code or tests.
-
-## Entry Gate
-
-All approved implementation tasks must be DONE and accepted.
-
-## Review Areas
-
-Evaluate:
-
-- correctness
-- architecture compliance
-- validation/error handling
-- security/privacy
-- test quality
-- maintainability
-- dependency safety
-- scope compliance
-
-Run relevant read-only verification commands.
-
-## Findings
-
-Use `CR-###`.
-
-Severity:
-
-- BLOCKER
-- MAJOR
-- MINOR
-- OBSERVATION
-
-## Outcome
-
-Use:
-
-- `PASS`
-- `PASS WITH MINOR CHANGES`
-- `REWORK REQUIRED`
-
-State whether Final Verification is `ALLOWED` or `BLOCKED`.
-
-## Completion Header
-
-```text
-Current Stage: Code Review
-Application: <application>
-Application Root: <application-root>
-Target Artifact: <SDLC Artifact Directory>/code-review.md
-Code Review Outcome: <outcome>
-Final Verification: <ALLOWED | BLOCKED>
-```
+- Not all approved tasks are `DONE` and accepted: stop and report.

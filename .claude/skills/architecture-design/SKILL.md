@@ -1,38 +1,40 @@
 ---
 name: architecture-design
-description: Methodology for designing the active application's architecture from its approved requirements.
+description: Procedure for designing an application's architecture from approved requirements and writing architecture.md. Use when creating or revising architecture.md.
 ---
 
-# Architecture Design Skill
+# Architecture Design
 
-Read:
+Read: `<SDLC Artifact Directory>/requirements.md`
+Write: `<SDLC Artifact Directory>/architecture.md`
 
-`<SDLC Artifact Directory>/requirements.md`
+## Procedure
 
-Write:
+1. Confirm `Requirements Status: APPROVED`. Otherwise stop as defined in the agent.
+2. Record drivers and constraints from the requirements.
+3. Compare two or three options where a real choice exists. Record the trade-off and the choice.
+4. Document each section:
+   - stack
+   - components and their responsibilities
+   - data model and data flows
+   - integrations and persistence
+   - validation and error handling
+   - security and privacy
+   - performance and reliability
+   - accessibility, where it applies
+   - testability and deployment
+   - ADRs and risks
+5. Trace every FR, NFR, and AC to a component or test seam.
+6. Use the simplest design that meets the requirements. Do not add capability no requirement asks for.
+7. Set `Architecture Status: DRAFT — PENDING DESIGN REVIEW`. Do not use `PENDING HUMAN APPROVAL` before design review runs.
+8. After Design Review permits progression and the human delegates Architecture Approval, set `Architecture Status: APPROVED`, then re-read the file and remove stale pending statements.
 
-`<SDLC Artifact Directory>/architecture.md`
+## Output header
 
-Requirements must be APPROVED.
-
-Design the simplest adequate architecture and document:
-
-- drivers/constraints
-- options/tradeoffs
-- stack
-- components/responsibilities
-- data model/flows
-- integrations
-- persistence
-- validation
-- security
-- performance
-- accessibility
-- reliability
-- testability
-- deployment
-- ADRs
-- risks
-- FR/NFR/AC traceability
-
-Do not invent missing requirements.
+```text
+Current Stage: Architecture
+Application: <application>
+Application Root: <application-root>
+Architecture Status: <DRAFT — PENDING DESIGN REVIEW | APPROVED | BLOCKED — REQUIREMENTS CLARIFICATION REQUIRED>
+Target Artifact: <SDLC Artifact Directory>/architecture.md
+```

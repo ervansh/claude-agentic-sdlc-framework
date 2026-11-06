@@ -1,31 +1,11 @@
 ---
-description: "Verify every approved FR/NFR/AC of the story with actual evidence."
+description: Verify every approved FR, NFR, and AC of the story with actual evidence.
 argument-hint: "[Application] [Application Root] [Story ID] [SDLC Artifact Directory]"
 ---
 
-# SDLC Final Verification
+Launch the `verification-engineer` subagent with this task.
 
-Delegate to the `verification-engineer` subagent (.claude/agents/verification-engineer.md) and apply the `final-verification` skill (.claude/skills/final-verification/SKILL.md).
+Context: $ARGUMENTS
 
-Run context (passed as arguments to this command):
-
-$ARGUMENTS
-
-Expected keys:
-
-```text
-Application: <name>
-Application Root: <application-root>
-Story ID: <stable-story-id, when managed>
-SDLC Artifact Directory: <resolved-sdlc-artifact-directory>
-```
-
-If required values are missing, ask for them and stop.
-
-Verify every approved FR/NFR/AC with actual evidence.
-
-Write:
-
-`<SDLC Artifact Directory>/verification.md`
-
-Do not modify production code or tests.
+Required: Application, Application Root, SDLC Artifact Directory.
+Output: `<SDLC Artifact Directory>/verification.md`

@@ -1,34 +1,12 @@
 ---
-description: "Run an independent design review of the story's requirements and architecture."
+description: Run an independent design review of the story's architecture against its requirements.
 argument-hint: "[Application] [Application Root] [Story ID] [SDLC Artifact Directory]"
 ---
 
-# SDLC Design Review
+Launch the `design-reviewer` subagent with this task.
 
-Delegate to the `design-reviewer` subagent (.claude/agents/design-reviewer.md) and apply the `design-review` skill (.claude/skills/design-review/SKILL.md).
+Context: $ARGUMENTS
 
-Run context (passed as arguments to this command):
-
-$ARGUMENTS
-
-Expected keys:
-
-```text
-Application: <name>
-Application Root: <application-root>
-Story ID: <stable-story-id, when managed>
-SDLC Artifact Directory: <resolved-sdlc-artifact-directory>
-```
-
-If required values are missing, ask for them and stop.
-
-Review:
-
-- `<SDLC Artifact Directory>/requirements.md`
-- `<SDLC Artifact Directory>/architecture.md`
-
-Write:
-
-`<SDLC Artifact Directory>/design-review.md`
-
-Perform an independent review. Do not edit architecture directly and do not grant human Architecture Approval.
+Required: Application, Application Root, SDLC Artifact Directory.
+Inputs: `<SDLC Artifact Directory>/requirements.md`, `<SDLC Artifact Directory>/architecture.md`
+Output: `<SDLC Artifact Directory>/design-review.md`

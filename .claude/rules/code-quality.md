@@ -8,7 +8,7 @@ These rules apply to every implementation, review, and verification stage.
 
 ## Error handling
 - Handle API failures, missing files, and empty inputs explicitly. Do not swallow exceptions.
-- Report errors with clear messages. Never include tokens, credentials, or full response bodies in an error.
+- Report errors with clear messages. Redaction rules are in `secrets.md`.
 
 ## Tests
 - Every change needs tests for the happy path and for the edge cases: not-found, missing field, empty input, and invalid input.

@@ -1,31 +1,11 @@
 ---
-description: "Run an independent code review of the story's approved artifacts, implementation, and tests."
+description: Run an independent code review of the story's implementation and tests.
 argument-hint: "[Application] [Application Root] [Story ID] [SDLC Artifact Directory]"
 ---
 
-# SDLC Code Review
+Launch the `code-reviewer` subagent with this task.
 
-Delegate to the `code-reviewer` subagent (.claude/agents/code-reviewer.md) and apply the `code-review` skill (.claude/skills/code-review/SKILL.md).
+Context: $ARGUMENTS
 
-Run context (passed as arguments to this command):
-
-$ARGUMENTS
-
-Expected keys:
-
-```text
-Application: <name>
-Application Root: <application-root>
-Story ID: <stable-story-id, when managed>
-SDLC Artifact Directory: <resolved-sdlc-artifact-directory>
-```
-
-If required values are missing, ask for them and stop.
-
-Review only the selected application's approved artifacts, implementation, and tests.
-
-Write:
-
-`<SDLC Artifact Directory>/code-review.md`
-
-Do not modify production code or tests.
+Required: Application, Application Root, SDLC Artifact Directory.
+Output: `<SDLC Artifact Directory>/code-review.md`

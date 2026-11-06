@@ -1,18 +1,28 @@
 ---
 name: pull-request-preparation
-description: Safe PR-preparation methodology using the active application's verified lifecycle evidence.
+description: Procedure for preparing a changelog entry and a pull request after verification, with per-run approval before any commit, push, or PR. Use when preparing a story for review.
 ---
 
-# Pull Request Preparation Skill
+# Pull Request Preparation
 
-Entry gate: verification permits PR preparation.
+Write: `<application-root>/CHANGELOG.md`, `<SDLC Artifact Directory>/pull-request.md`
 
-Write:
+## Procedure
 
-- `<application-root>/CHANGELOG.md`
-- `<SDLC Artifact Directory>/pull-request.md`
+1. Inspect Git state: repository root, current branch, base branch, remote, working tree, staged and unstaged diffs, and any existing PR for the head branch.
+2. Write the changelog entry and `pull-request.md`. Use the verification evidence actually recorded.
+3. Present for approval:
+   - files and diff to commit
+   - commit message
+   - remote, head branch, and base branch
+   - PR title
+   - complete PR body
+4. Wait for one explicit approval. Then stage by path, commit, and push with Git.
+5. Immediately before creating the PR, check for an existing PR for the head branch with `github_get_pull_request`. If one exists, report its verified URL and do not create a duplicate.
+6. Create the PR with `github_create_pull_request`.
+7. Read the PR back with `github_get_pull_request`. Verify repository, URL, head, base, and open state before you report success.
 
-PR description must include:
+## PR body sections
 
 - Summary
 - Changes Made
@@ -20,36 +30,19 @@ PR description must include:
 - Known Limitations
 - Reviewer Checklist
 
-Inspect Git/remote/gh state before claiming commit, push, or PR creation.
+## Terminal status (use exactly one)
 
-## Safe GitHub PR Workflow
+- `PULL REQUEST CREATED — READY FOR HUMAN REVIEW`: created and verified.
+- `PULL REQUEST PREPARED — REMOTE CREATION BLOCKED`: artifacts are ready, but push or PR creation could not be completed. Record the reason separately.
 
-1. Confirm the active application's final verification permits PR preparation.
-2. Inspect the repository root, current branch, base branch, remote, working tree state,
-   staged and unstaged diffs, and any existing PR for the head branch.
-3. In a managed story session, remain on that story's `story/<id>` branch in
-   the current workspace. Never switch branches, discard work, or stage unrelated changes.
-   If the branch is the default branch or the correct base/remote is ambiguous,
-   stop and ask the human to resolve it.
-4. Prepare the changelog and PR artifact with actual verification evidence.
-5. Present the exact files/diff, proposed commit message, remote, head/base,
-   PR title, and complete PR body. Request one explicit per-run approval before
-   staging/committing PR changes, pushing, or creating the PR.
-6. After approval, use Git for local commit and push. Recheck through the
-   sdlc-integrations MCP server for an existing PR immediately before creation
-   to avoid a concurrent duplicate (mcp__sdlc-integrations__github_get_pull_request).
-   Use the sdlc-integrations MCP server for remote lookup, creation
-   (mcp__sdlc-integrations__github_create_pull_request), and read-back
-   verification (mcp__sdlc-integrations__github_get_pull_request).
-   Do not use direct HTTP, configuration-file credentials, or an unapproved
-   CLI fallback.
-7. If an equivalent PR already exists, report its verified URL and status;
-   do not create a duplicate.
-8. Verify the created PR's repository, URL, head, base, and open state before
-   reporting `PULL REQUEST CREATED — READY FOR HUMAN REVIEW`.
+Git push authentication and `sdlc-integrations` authentication are separate prerequisites. Report whichever is missing.
 
-Git push authentication and sdlc-integrations MCP server authentication are separate. If either
-is missing or a remote operation fails, report the specific blocker and use
-`PULL REQUEST PREPARED — REMOTE CREATION BLOCKED`.
+## Output header
 
-Never force push or merge.
+```text
+Current Stage: Pull Request Preparation
+Application: <application>
+Application Root: <application-root>
+Target Artifact: <SDLC Artifact Directory>/pull-request.md
+Pull Request Status: <terminal status>
+```
